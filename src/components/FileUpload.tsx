@@ -2,19 +2,18 @@ import axios from "axios";
 import { useState } from "react";
 
 interface FileUploadProps {
-    
+    setFileURL: (url: string) => void;
 }
 
-export default function FileUpload() {
+export default function FileUpload({ setFileURL } : FileUploadProps) {
 
     const [file, setFile] = useState<File | null>(null);
-    const [uploadedFileUrl, setUploadedFileUrl] = useState<string>("");
 
     async function handleFileUpload(e: React.FormEvent) {
         e.preventDefault();
         if (file) {
             try {
-                const response = await axios.get("/generate-url");
+                const response = await axios.get("https://filebox-pe5y.onrender.com/generate-url");
                 const url = response.data.url;
                 await axios.put(url, file, {
                     headers: {
@@ -23,7 +22,7 @@ export default function FileUpload() {
                 });
 
                 const photoUrl = url.split('?')[0];
-                setUploadedFileUrl(photoUrl);
+                setFileURL(photoUrl);
                 console.log(photoUrl);
             } catch (error) {
                 console.error("Failed to generate upload URL", error);

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import axios from 'axios'
+import FileUpload from "../components/FileUpload";
 
 export default function Files() {
 
@@ -7,10 +8,7 @@ export default function Files() {
 
     return (
         <>
-            <form onSubmit={handleFileUpload}>
-                <input onChange={handleFileInput} type="file" accept="image/*"/>
-                <button type="submit">Upload</button>
-            </form>
+            <FileUpload setFileURL={setUploadedFileUrl}/>
 
             {uploadedFileUrl && <img src={uploadedFileUrl} alt="Uploaded file" />}
         </>

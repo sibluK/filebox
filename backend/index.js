@@ -1,7 +1,14 @@
 import express from 'express';
 import generateUploadURL from './s3.js';
+import cors from 'cors'
 
 const app = express();
+
+app.use(cors({
+    origin: 'http://localhost:5173',
+    methods: 'GET,POST,PUT', 
+    allowedHeaders: 'Content-Type'
+}));
 
 app.get('/generate-url', async (req, res) => {
     try {
