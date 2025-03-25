@@ -33,10 +33,23 @@ app.get('/users/:id/files', async (req, res) => {
     var user_id = req.params.id;
 
     try {
-        const { rows } = await pool.query(`SELECT * FROM user_files WHERE user_id = ${user_id}`)
+        const { rows } = await pool.query('SELECT * FROM user_files WHERE user_id = $1', [user_id]);
         res.json(rows);
     } catch (error) {
         console.log("Failed to fetch user files");
+        res.status(500).json({ error: 'Interal Server Error'})
+    }
+})
+
+app.post('/users/files', async (req, res) => {
+
+    const user_id = req.body.user_id;
+    const file_url = req.body.file_url;
+
+    try {
+        await pool.query('INSERT INTO user_files (user_id, file_url) VALUES ($1, $2),'[user_id, file_url]);
+    } catch (error) {
+        console.log("Failed to insert user file");
         res.status(500).json({ error: 'Interal Server Error'})
     }
 })

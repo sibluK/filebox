@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { useRef, useState } from "react";
 
@@ -10,32 +11,46 @@ export default function FileUpload({ setFileURL } : FileUploadProps) {
     const [file, setFile] = useState<File | null>(null);
     const [error, setError] = useState<string>("");
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const backend_url = import.meta.env.VITE_BACKEND_URL;
+
+    const { user } = useUser();
 
     async function handleFileUpload(e: React.FormEvent) {
         e.preventDefault();
         if (file) {
             try {
                 // Get the url for uploading to S3 from the server 
-                const response = await axios.get("https://filebox-pe5y.onrender.com/generate-url");
+                const response = await axios.get(`${backend_url}/generate-url`);
                 const url = response.data.url;
 
                 // Send the uploaded file to S3 bucket
-                await axios.put(url, file, {
+                const s3response = await axios.put(url, file, {
                     headers: {
                         "Content-Type": file.type
                     }
                 });
 
-                // Get and set the file url for displaying the uploaded image
-                const photoUrl = url.split('?')[0];
-                setFileURL(photoUrl);
-                setError("");
-
-                // Clear the file input
-                if (fileInputRef.current) {
-                    fileInputRef.current.value = "";
+                if (s3response.status === 200) {
+                    const file_url = url.split('?')[0];
+                    const user_id = user?.id;
+                    setFileURL(file_url);
+                    setError("");
+    
+                    // Clear the file and the input
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = "";
+                    }
+                    setFile(null);
+ 
+                    // Send a request to the backend for storing the user id and the file link
+                    await axios.post(`${backend_url}/users/files`, {
+                        user_id,
+                        file_url
+                    });
                 }
-                setFile(null);
+
+                // Get and set the file url for displaying the uploaded image
+
 
             } catch (error) {
                 console.error("Failed to generate upload URL", error);
