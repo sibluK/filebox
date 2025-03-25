@@ -18,3 +18,7 @@
 .nav-link a:hover {
     opacity: 0.8;
 }
+
+.logo-wrapper {
+    margin-right: auto;
+}

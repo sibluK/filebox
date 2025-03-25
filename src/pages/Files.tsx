@@ -17,7 +17,8 @@ export default function Files() {
                 <FileList files={files} loading={loading}/>
             </div>
 
-            {uploadedFileUrl && <img src={uploadedFileUrl} alt="Uploaded file" />}
+            
+            {/*uploadedFileUrl && <img src={uploadedFileUrl} alt="Uploaded file" />*/}
         </>
     )
 }

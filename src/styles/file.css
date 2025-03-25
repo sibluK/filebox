@@ -1,11 +1,37 @@
 .file-wrapper {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 20px;
+
+    border: 1px solid lightgray;
 }
 
-.file-image {
-    max-width:  300px;
+.file-content {
+    padding: 10px;
+}
+
+.file-image,
+.file-video,
+.file-iframe {
     max-height: 300px;
     object-fit: cover;
+    border-radius: 5px;
+}
+
+.file-information-wrapper {
+    padding: 10px;
+    border-top: 1px solid lightgray;
+}
+
+.info-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-header {
+    font-weight: 500;
+}
+
+.info-value {
+    color: gray;
 }
