@@ -43,11 +43,10 @@ app.get('/users/:id/files', async (req, res) => {
 
 app.post('/users/files', async (req, res) => {
 
-    const user_id = req.body.user_id;
-    const file_url = req.body.file_url;
+    const { user_id, file_url, file_type } = req.body;
 
     try {
-        await pool.query('INSERT INTO user_files (user_id, file_url) VALUES ($1, $2)', [user_id, file_url]);
+        await pool.query('INSERT INTO user_files (user_id, file_url, file_type) VALUES ($1, $2, $3)', [user_id, file_url, file_type]);
         res.status(201).json({ message: 'File URL saved successfully' });
     } catch (error) {
         console.log("Failed to insert user file");

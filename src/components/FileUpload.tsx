@@ -1,12 +1,15 @@
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { useRef, useState } from "react";
+import "../styles/file-upload.css"
+import { UserFile }  from "../types/types"
 
 interface FileUploadProps {
     setFileURL: (url: string) => void;
+    setFiles: React.Dispatch<React.SetStateAction<UserFile[]>>;
 }
 
-export default function FileUpload({ setFileURL } : FileUploadProps) {
+export default function FileUpload({ setFileURL, setFiles } : FileUploadProps) {
 
     const [file, setFile] = useState<File | null>(null);
     const [error, setError] = useState<string>("");
@@ -18,6 +21,15 @@ export default function FileUpload({ setFileURL } : FileUploadProps) {
     async function handleFileUpload(e: React.FormEvent) {
         e.preventDefault();
         if (file) {
+
+            const file_size_mb = file.size / 1024 / 1024;
+            const max_file_size = 5;
+
+            if(file_size_mb > max_file_size) {
+                setError("File is too large. Max size is 10MB")
+                return;
+            }
+
             try {
                 // Get the url for uploading to S3 from the server 
                 const response = await axios.get(`${backend_url}/generate-url`);
@@ -31,8 +43,10 @@ export default function FileUpload({ setFileURL } : FileUploadProps) {
                 });
 
                 if (s3response.status === 200) {
+                    // Set fields for file
+                    const user_id = user?.id || "";
+                    const file_type = file.type;
                     const file_url = url.split('?')[0];
-                    const user_id = user?.id;
                     setFileURL(file_url);
                     setError("");
     
@@ -45,12 +59,16 @@ export default function FileUpload({ setFileURL } : FileUploadProps) {
                     // Send a request to the backend for storing the user id and the file link
                     await axios.post(`${backend_url}/users/files`, {
                         user_id,
-                        file_url
+                        file_url,
+                        file_type
                     });
+
+                    // Update the files state
+                    setFiles((prevFiles: UserFile[]) => [
+                        ...prevFiles,
+                         { user_id, file_url, file_type }
+                    ]);
                 }
-
-                // Get and set the file url for displaying the uploaded image
-
 
             } catch (error) {
                 console.error("Failed to generate upload URL", error);
@@ -64,6 +82,7 @@ export default function FileUpload({ setFileURL } : FileUploadProps) {
     function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
         if (e.target.files && e.target.files.length > 0) {
             setFile(e.target.files[0]);
+            console.log(e.target.files[0].size / 1024 / 1024)
             setError("");
         }
     }
@@ -72,7 +91,7 @@ export default function FileUpload({ setFileURL } : FileUploadProps) {
         <>
             <div className="file-upload-wrapper">
                 <form onSubmit={handleFileUpload}>
-                    <input ref={fileInputRef} onChange={handleFileInput} type="file" accept="image/*"/>
+                    <input ref={fileInputRef} onChange={handleFileInput} type="file" accept="*"/>
                     <button type="submit">Upload</button>
                 </form>
                 {error && (
@@ -80,7 +99,6 @@ export default function FileUpload({ setFileURL } : FileUploadProps) {
                         <span>{error}</span>
                     </div>
                 )}
-
             </div>
 
         </>

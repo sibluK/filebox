@@ -1,0 +1,11 @@
+.file-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.file-image {
+    max-width:  300px;
+    max-height: 300px;
+    object-fit: cover;
+}

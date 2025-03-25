@@ -1,14 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
 import { useUser } from "@clerk/clerk-react";
+import { UserFile } from '../types/types'
 
 export default function useUserFiles() {
-    const [files, setFiles] = useState([])
+    const [files, setFiles] = useState<UserFile[]>([])
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
 
     const { user } = useUser();
-    const user_files_url = `${import.meta.env.BACKEND_URL}/users/${user?.id}/files`
+    const backend_url = import.meta.env.VITE_BACKEND_URL
+    const user_files_url = `${backend_url}/users/${user?.id}/files`
 
     useEffect(() => {
         axios.get(user_files_url)
@@ -16,13 +18,11 @@ export default function useUserFiles() {
             setFiles(response.data)
             setLoading(false);
         })
-        .catch((e) => {
-            setError(e)
+        .catch((error) => {
+            setError(error)
             setLoading(false);
         }) 
-    }, [])
-
-
-    return { files, loading, error}
-
+    }, [user, backend_url])
+    
+    return { files, loading, error, setFiles }
 }
