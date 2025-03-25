@@ -47,7 +47,8 @@ app.post('/users/files', async (req, res) => {
     const file_url = req.body.file_url;
 
     try {
-        await pool.query('INSERT INTO user_files (user_id, file_url) VALUES ($1, $2),'[user_id, file_url]);
+        await pool.query('INSERT INTO user_files (user_id, file_url) VALUES ($1, $2)', [user_id, file_url]);
+        res.status(201).json({ message: 'File URL saved successfully' });
     } catch (error) {
         console.log("Failed to insert user file");
         res.status(500).json({ error: 'Interal Server Error'})
