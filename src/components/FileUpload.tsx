@@ -27,7 +27,7 @@ export default memo(function FileUpload({ setFileURL, setFiles } : FileUploadPro
             const max_file_size = 5;
 
             if(file_size_mb > max_file_size) {
-                setError("File is too large. Max size is 10MB")
+                //setError("File is too large. Max size is 10MB")
                 toast.error("File is too large. Max size is 5MB")
                 return;
             }
@@ -68,7 +68,9 @@ export default memo(function FileUpload({ setFileURL, setFiles } : FileUploadPro
                     await axios.post(`${backend_url}/users/files`, {
                         user_id,
                         file_url,
-                        file_type
+                        file_type,
+                        file_size,
+                        added_at
                     });
 
                     // Update the files state
@@ -77,7 +79,12 @@ export default memo(function FileUpload({ setFileURL, setFiles } : FileUploadPro
                          { user_id, file_url, file_type, file_size, added_at }
                     ]);
 
-                    toast.success("File uploaded successfully")
+                    toast.success(
+                        <div className="file-upload-toast">
+                            <p>File uploaded successfully!</p>
+                            <p>{file_size_mb.toFixed(2)} MB</p>
+                        </div>
+                    );
                 }
 
             } catch (error) {
@@ -85,7 +92,8 @@ export default memo(function FileUpload({ setFileURL, setFiles } : FileUploadPro
                 setError("Failed to generate upload URL")
             }
         } else {
-            setError("No file selected")
+            //setError("No file selected")
+            toast.error("No file selected...")
         }
     }
 
@@ -100,9 +108,13 @@ export default memo(function FileUpload({ setFileURL, setFiles } : FileUploadPro
     return (
         <>
             <div className="file-upload-wrapper">
-                <form onSubmit={handleFileUpload}>
-                    <input ref={fileInputRef} onChange={handleFileInput} type="file" accept="*"/>
-                    <button type="submit">Upload</button>
+                <form className="form" onSubmit={handleFileUpload}>
+                    <label htmlFor="file-input" className="drop-container">
+                        <span className="drop-title">Drop files here</span>
+                        or
+                        <input type="file" accept="*" id="file-input" ref={fileInputRef} onChange={handleFileInput}/>
+                    </label>
+                    <button type="submit" className="submit-file-button">Upload</button>
                 </form>
                 {error && (
                     <div className="error-wrapper">

@@ -1,0 +1,29 @@
+.files-section {
+    min-width: 100%;
+}
+
+.file-list-header {
+    display: flex;
+    margin-bottom: 15px;
+    justify-content: space-between;
+}
+
+.file-list-header h2 {
+    color: var(--accent-color);
+}
+
+@media screen and (max-width: 950px) {
+    .files-section {
+        min-width: 100%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .files-section {
+        min-width: 100%;
+    }
+
+    .file-list-header {
+        flex-direction: column;
+    }
+}

@@ -6,6 +6,7 @@ import Profile from './pages/Profile'
 import Navbar from './components/Navbar'
 import Files from './pages/Files'
 import { ToastContainer, Bounce } from 'react-toastify';
+import ProtectedRoute from "./components/ProtectedRoute"
 
 function App() {
 
@@ -15,13 +16,13 @@ function App() {
       <div className='content'>
         <Routes>
           <Route path='/' element={<Home />}/>
-          <Route path='/profile' element={<Profile />} />
-          <Route path='/files' element={<Files/>} />
+          <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path='/files' element={<ProtectedRoute><Files /></ProtectedRoute>} />
           <Route path='/sign-up' element={<SignUp />} />
         </Routes>
         <ToastContainer
           position="bottom-right"
-          autoClose={5000}
+          autoClose={4000}
           hideProgressBar={false}
           newestOnTop={false}
           closeOnClick={false}

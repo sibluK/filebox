@@ -22,3 +22,13 @@
 .logo-wrapper {
     margin-right: auto;
 }
+
+.logo-wrapper a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-wrapper svg {
+    width: 40px;
+}

@@ -28,6 +28,7 @@ app.get('/generate-url', async (req, res) => {
     }
 });
 
+    // For getting user individual files  
 app.get('/users/:id/files', async (req, res) => {
 
     var user_id = req.params.id;
@@ -41,6 +42,7 @@ app.get('/users/:id/files', async (req, res) => {
     }
 })
 
+    // For uploading information to the Neon postgresql database
 app.post('/users/files', async (req, res) => {
 
     const { user_id, file_url, file_type, file_size, added_at } = req.body;
@@ -53,6 +55,9 @@ app.post('/users/files', async (req, res) => {
         res.status(500).json({ error: 'Interal Server Error'})
     }
 })
+
+
+
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

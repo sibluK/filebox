@@ -1,5 +1,93 @@
 .file-upload-wrapper {
     padding: 20px;
-    border: 1px solid lightgray;
-    margin-bottom: 10px;
 }
+
+.submit-file-button {
+    width: 100%;
+    padding: 10px 20px;
+    margin: 5px;
+    background: linear-gradient(121deg, rgba(33,84,190,1) 0%, rgba(2,130,233,1) 100%);
+    border: none;
+    cursor: pointer;
+    color: white;
+    border-radius: 10px;
+}
+
+.submit-file-button:hover {
+    background: linear-gradient(121deg, rgb(21, 67, 167) 0%, rgb(2, 109, 196) 100%);
+}
+
+.form {
+    border-radius: 20px;
+    text-align: center;
+    font-size: 1.125rem;
+    max-width: 320px;
+  }
+  
+  .form-title {
+    font-size: 1.8rem;
+    font-weight: 500;
+  }
+  
+  .form-paragraph {
+    margin-top: 10px;
+    font-size: 0.9375rem;
+    color: rgb(105, 105, 105);
+  }
+  
+  .drop-container {
+    position: relative;
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px dashed var(--accent-color);
+    color: #444;
+    cursor: pointer;
+    transition: background .2s ease-in-out, border .2s ease-in-out;
+  }
+  
+  .drop-container:hover {
+    background: rgba(0, 140, 255, 0.164);
+    border-color: rgba(17, 17, 17, 0.616);
+  }
+  
+  .drop-container:hover .drop-title {
+    color: #222;
+  }
+  
+  .drop-title {
+    color: #444;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    transition: color .2s ease-in-out;
+  }
+  
+  #file-input {
+    width: 350px;
+    max-width: 100%;
+    color: #444;
+    padding: 2px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid rgba(8, 8, 8, 0.288);
+  }
+  
+  #file-input::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: linear-gradient(121deg, rgba(33,84,190,1) 0%, rgba(2,130,233,1) 100%);
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: background .5s ease-in-out;
+  }
+  
+  #file-input::file-selector-button:hover {
+    background: linear-gradient(121deg, rgb(21, 67, 167) 0%, rgb(2, 109, 196) 100%);
+  }
