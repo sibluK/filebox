@@ -1,15 +1,16 @@
 import { useUser } from "@clerk/clerk-react";
 import axios from "axios";
-import { useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import "../styles/file-upload.css"
 import { UserFile }  from "../types/types"
+import { toast } from 'react-toastify';
 
 interface FileUploadProps {
     setFileURL: (url: string) => void;
     setFiles: React.Dispatch<React.SetStateAction<UserFile[]>>;
 }
 
-export default function FileUpload({ setFileURL, setFiles } : FileUploadProps) {
+export default memo(function FileUpload({ setFileURL, setFiles } : FileUploadProps) {
 
     const [file, setFile] = useState<File | null>(null);
     const [error, setError] = useState<string>("");
@@ -27,6 +28,7 @@ export default function FileUpload({ setFileURL, setFiles } : FileUploadProps) {
 
             if(file_size_mb > max_file_size) {
                 setError("File is too large. Max size is 10MB")
+                toast.error("File is too large. Max size is 5MB")
                 return;
             }
 
@@ -47,6 +49,12 @@ export default function FileUpload({ setFileURL, setFiles } : FileUploadProps) {
                     const user_id = user?.id || "";
                     const file_type = file.type;
                     const file_url = url.split('?')[0];
+                    const file_size = file.size;
+                    const now = new Date();
+                    const added_at = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ` +
+                                      `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+                
+
                     setFileURL(file_url);
                     setError("");
     
@@ -66,8 +74,10 @@ export default function FileUpload({ setFileURL, setFiles } : FileUploadProps) {
                     // Update the files state
                     setFiles((prevFiles: UserFile[]) => [
                         ...prevFiles,
-                         { user_id, file_url, file_type }
+                         { user_id, file_url, file_type, file_size, added_at }
                     ]);
+
+                    toast.success("File uploaded successfully")
                 }
 
             } catch (error) {
@@ -103,5 +113,4 @@ export default function FileUpload({ setFileURL, setFiles } : FileUploadProps) {
 
         </>
     )
-
-}
+})

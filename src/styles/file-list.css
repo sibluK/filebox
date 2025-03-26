@@ -1,4 +1,6 @@
 .file-list-wrapper {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
+    border: 1px solid red;
 }
