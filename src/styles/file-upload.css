@@ -3,29 +3,56 @@
 }
 
 .submit-file-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
   width: 100%;
   padding: 10px 20px;
-  margin: 5px;
-  background: linear-gradient(
-    121deg,
-    rgba(33, 84, 190, 1) 0%,
-    rgba(2, 130, 233, 1) 100%
-  );
+  background: var(--accent-gradient);
   border: none;
   cursor: pointer;
   color: white;
   border-radius: 10px;
-  box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
-    rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+  box-shadow: var(--box-shadow);
   margin-top: 10px;
+  font-weight: 600;
+  font-size: 1em;
+}
+
+.submit-file-button svg {
+  transform: translateY(-2px);
 }
 
 .submit-file-button:hover {
-  background: linear-gradient(
-    121deg,
-    rgb(21, 67, 167) 0%,
-    rgb(2, 109, 196) 100%
-  );
+  background: var(--accent-gradient-hover)
+}
+
+.file-action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.file-action-buttons button {
+  border: none;
+  background: var(--accent-gradient);
+  color: white;
+  padding: 5px 10px;
+  box-shadow: var(--box-shadow);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.file-action-buttons button:hover {
+  background: var(--accent-gradient-hover);
+}
+
+.mime-types {
+  font-size: 0.7em;
+  color: gray;
 }
 
 .drop-container.dragging {
@@ -95,11 +122,7 @@
 #file-input::file-selector-button {
   margin-right: 20px;
   border: none;
-  background: linear-gradient(
-    121deg,
-    rgba(33, 84, 190, 1) 0%,
-    rgba(2, 130, 233, 1) 100%
-  );
+  background: var(--accent-gradient);
   padding: 10px 20px;
   border-radius: 10px;
   color: #fff;
@@ -108,9 +131,5 @@
 }
 
 #file-input::file-selector-button:hover {
-  background: linear-gradient(
-    121deg,
-    rgb(21, 67, 167) 0%,
-    rgb(2, 109, 196) 100%
-  );
+  background: var(--accent-gradient-hover)
 }

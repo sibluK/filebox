@@ -3,7 +3,6 @@ import generateUploadURL from './s3.js';
 import cors from 'cors'
 import pkg from 'pg';
 
-
 // App config
 const app = express();
 
@@ -11,8 +10,10 @@ app.use(express.json());
 
 app.use(cors({
     origin: 'http://localhost:5173',
-    methods: 'GET,POST,PUT', 
-    allowedHeaders: 'Content-Type'
+    methods: 'GET,POST,PUT,HEAD',
+    allowedHeaders: ['Content-Type', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Headers'],
+    exposedHeaders: ['ETag', 'Content-Length', 'Content-Type', 'Content-Disposition'],
+    credentials: true
 }));
 
 const { Pool } = pkg;
@@ -55,9 +56,6 @@ app.post('/users/files', async (req, res) => {
         res.status(500).json({ error: 'Interal Server Error'})
     }
 })
-
-
-
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

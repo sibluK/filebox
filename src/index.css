@@ -13,6 +13,18 @@
   -moz-osx-font-smoothing: grayscale;
 
   --accent-color: #3282ec;
+  --accent-gradient: linear-gradient(
+    121deg,
+    rgba(33, 84, 190, 1) 0%,
+    rgba(2, 130, 233, 1) 100%
+  );
+  --accent-gradient-hover: linear-gradient(
+    121deg,
+    rgb(21, 67, 167) 0%,
+    rgb(2, 109, 196) 100%
+  );
+  --box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px,
+  rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
 
 }
 

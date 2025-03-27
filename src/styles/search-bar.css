@@ -3,12 +3,12 @@
 }
 
 .search-bar {
-    outline: 1px solid var(--accent-color);
     border-radius: 5px;
     padding: 10px;
     font-size: 1em;
     margin-left: auto;
     border: none;
+    box-shadow: var(--box-shadow);
 }
 
 .search-bar:focus {

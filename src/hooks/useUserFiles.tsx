@@ -13,16 +13,18 @@ export default function useUserFiles() {
     const user_files_url = `${backend_url}/users/${user?.id}/files`
 
     useEffect(() => {
-        axios.get(user_files_url)
-        .then(response => {
-            setFiles(response.data)
-            setLoading(false);
-        })
-        .catch((error) => {
-            setError(error)
-            setLoading(false);
-        }) 
-    }, [user, backend_url])
+        if (user) {
+            axios.get(user_files_url)
+            .then(response => {
+                setFiles(response.data)
+                setLoading(false);
+            })
+            .catch((error) => {
+                setError(error)
+                setLoading(false);
+            }) 
+        }
+    }, [user])
     
     return { files, loading, error, setFiles }
 }

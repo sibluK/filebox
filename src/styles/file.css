@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     border-radius: 5px;
-    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+    box-shadow: var(--box-shadow);
     justify-content: space-between;
 }
 
@@ -52,14 +52,5 @@
 }
 
 @media screen and (max-width: 600px) {
-    .file-wrapper {
-        width: 100%;
-    }
 
-    .file-image,
-    .file-video,
-    .file-iframe {
-        min-width: 100%;
-
-    }
 }

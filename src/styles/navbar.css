@@ -2,7 +2,7 @@
     display: flex;
     justify-content: end;
     align-items: center;
-    background: linear-gradient(121deg, rgba(33,84,190,1) 0%, rgba(2,130,233,1) 100%);
+    background: var(--accent-gradient);
     height: 60px;
     padding: 20px 10%;
     gap: 20px;
