@@ -14,7 +14,15 @@ const s3 = new aws.S3({
     accessKeyId,
     secretAccessKey,
     signatureVersion: 'v4',
-    cors: true
+    useAccelerateEndpoint: true,
+    httpOptions: {
+        headers: {
+            'Access-Control-Allow-Origin': 'http://localhost:5173',
+            'Access-Control-Allow-Methods': 'GET, PUT, POST, HEAD',
+            'Access-Control-Allow-Headers': '*',
+            'Access-Control-Expose-Headers': 'ETag, x-amz-server-side-encryption, x-amz-request-id, x-amz-id-2'
+        }
+    }
 })
 
 export default async function generateUploadURL() {
@@ -27,20 +35,14 @@ export default async function generateUploadURL() {
         Expires: 60,
         ACL: 'public-read',
         ContentType: 'application/octet-stream',
-        Metadata: {
-            'access-control-allow-origin': 'http://localhost:5173'
-        },
-        ResponseHeaders: {
-            'Access-Control-Allow-Origin': 'http://localhost:5173',
-            'Access-Control-Allow-Methods': 'GET, PUT, POST, HEAD',
-            'Access-Control-Allow-Headers': '*',
-            'Access-Control-Expose-Headers': 'ETag',
-            'Content-Type': 'application/octet-stream',
-            'Content-Disposition': 'attachment'
+        CORSRule: {
+            AllowedHeaders: ['*'],
+            AllowedMethods: ['GET', 'PUT', 'POST', 'HEAD'],
+            AllowedOrigins: ['http://localhost:5173'],
+            ExposeHeaders: ['ETag', 'x-amz-server-side-encryption', 'x-amz-request-id', 'x-amz-id-2']
         }
     };
 
     const uploadURL = await s3.getSignedUrlPromise('putObject', params);
     return uploadURL;
 }
-
