@@ -13,7 +13,8 @@ const s3 = new aws.S3({
     region,
     accessKeyId,
     secretAccessKey,
-    signatureVersion: 'v4'
+    signatureVersion: 'v4',
+    cors: true
 })
 
 export default async function generateUploadURL() {
@@ -23,7 +24,13 @@ export default async function generateUploadURL() {
     const params = {
         Bucket: bucketName,
         Key: imageName,
-        Expires: 60
+        Expires: 60,
+        ContentType: 'application/octet-stream',
+        ACL: 'public-read',
+        // Add CORS-related metadata
+        Metadata: {
+            'Access-Control-Allow-Origin': 'http://localhost:5173'
+        }
     };
 
     const uploadURL = await s3.getSignedUrlPromise('putObject', params);
