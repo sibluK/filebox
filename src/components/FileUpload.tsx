@@ -128,13 +128,6 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                 'image/jpeg',
                 // Videos
                 'video/mp4',
-                // Documents
-                'application/pdf',
-                'application/msword', // .doc
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
-                'text/plain', // .txt
-                'application/vnd.ms-excel', // .xls
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // .xlsx
             ];
 
             if (allowedTypes.some(type => file.type.startsWith(type))) {
@@ -161,12 +154,12 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                         or
                         <input 
                             type="file" 
-                            accept=".png,.jpg,.jpeg,.mp4,.pdf,.doc,.docx,.txt,.xls,.xlsx" 
+                            accept=".png,.jpg,.jpeg,.mp4" 
                             id="file-input" 
                             ref={fileInputRef} 
                             onChange={handleFileInput}
                         />
-                        <span className="mime-types">.png .jpg .jpeg .mp4 .pdf .doc .docx .txt .xls .xlsx</span>
+                        <span className="mime-types">.png .jpg .jpeg .mp4</span>
                     </label>
                     <button type="submit" className="submit-file-button gradient-button">
                         <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
