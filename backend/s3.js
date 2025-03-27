@@ -25,11 +25,17 @@ export default async function generateUploadURL() {
         Bucket: bucketName,
         Key: imageName,
         Expires: 60,
-        // Add CORS-related metadata
+        ACL: 'public-read',
+        ContentType: 'application/octet-stream',
+        Metadata: {
+            'access-control-allow-origin': 'http://localhost:5173'
+        },
         ResponseHeaders: {
             'Access-Control-Allow-Origin': 'http://localhost:5173',
-            'Access-Control-Allow-Methods': 'GET',
+            'Access-Control-Allow-Methods': 'GET, PUT, POST, HEAD',
             'Access-Control-Allow-Headers': '*',
+            'Access-Control-Expose-Headers': 'ETag',
+            'Content-Type': 'application/octet-stream',
             'Content-Disposition': 'attachment'
         }
     };
