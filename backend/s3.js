@@ -23,12 +23,7 @@ export default async function generateUploadURL() {
     const params = {
         Bucket: bucketName,
         Key: imageName,
-        Expires: 60,
-        ContentType: 'application/octet-stream',
-        ACL: 'public-read',
-        Metadata: {
-            'Access-Control-Allow-Origin': '*'
-        }
+        Expires: 60
     };
 
     const uploadURL = await s3.getSignedUrlPromise('putObject', params);
