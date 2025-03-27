@@ -10,8 +10,9 @@ app.use(express.json());
 
 app.use(cors({
     origin: 'http://localhost:5173',
-    methods: 'GET,POST,PUT', 
-    allowedHeaders: 'Content-Type'
+    methods: ['GET', 'POST', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Access-Control-Allow-Origin', 'Content-Type', 'Authorization']
 }));
 
 const { Pool } = pkg;
