@@ -5,18 +5,18 @@
     background: var(--accent-gradient);
     height: 60px;
     padding: 20px 10%;
-    gap: 20px;
+    gap: 40px;
+}
+
+.nav-link {
+    display: flex;
 }
 
 .nav-link a {
     color: white;
     text-decoration: none;
-    padding: 10px;
     font-weight: 500;
-}
-
-.nav-link a:hover {
-    opacity: 0.8;
+    position: relative;
 }
 
 .logo-wrapper {

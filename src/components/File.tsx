@@ -42,22 +42,40 @@ export default function File({ file }: FileProps) {
 
     return (
         <div className="file-wrapper">
-            <div className="file-content">
-                {isImage && <img className="file-image" src={file.file_url} alt={file_name} />}
-                {isVideo && (
-                    <video className="file-video" controls>
-                        <source src={file.file_url} type={file.file_type} />
-                        Your browser does not support the video tag.
-                    </video>
-                )}
-                {!isImage && !isVideo && (
-                    <iframe className="file-iframe" src={file.file_url} title={file_name} />
-                )}
-            </div>
+        <div className="file-content">
+            {isImage && (
+                <img 
+                    className="file-image lightbox-trigger" 
+                    src={file.file_url} 
+                    alt={file_name}
+                    data-url={file.file_url}
+                    data-type={file.file_type}
+                />
+            )}
+            {isVideo && (
+                <video 
+                    className="file-video lightbox-trigger" 
+                    data-url={file.file_url}
+                    data-type={file.file_type}
+                >
+                    <source src={file.file_url} type={file.file_type} />
+                    Your browser does not support the video tag.
+                </video>
+            )}
+            {!isImage && !isVideo && (
+                <iframe
+                    className="file-preview lightbox-trigger"
+                    src={file.file_url}
+                    data-url={file.file_url}
+                    data-type={file.file_type}
+                    title={file_name}
+                />
+            )}
+        </div>
 
             <div className="file-information-wrapper">
                 <div className="file-action-buttons">
-                    <button onClick={handleFileDownload}>
+                    <button className="gradient-button" onClick={handleFileDownload}>
                         <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>
@@ -65,7 +83,7 @@ export default function File({ file }: FileProps) {
                         </svg>
                         Download
                     </button>
-                    <button onClick={handleFileCopyToClipboard}>
+                    <button className="gradient-button" onClick={handleFileCopyToClipboard}>
                         <svg width="25px" height="25px" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>

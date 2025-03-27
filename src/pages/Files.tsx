@@ -29,7 +29,7 @@ export default function Files() {
             <FileUpload setFiles={setFiles}/>
             <div className="files-section">
                 <div className="file-list-header">
-                    <h2>{user?.firstName}'s files ({filteredFiles.length}):</h2>
+                    <h2 className="text-gradient">{user?.firstName}'s files ({filteredFiles.length}):</h2>
                     <Search setQuery={handleQueryChange}/>
                 </div>
 

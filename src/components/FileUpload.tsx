@@ -168,7 +168,7 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                         />
                         <span className="mime-types">.png .jpg .jpeg .mp4 .pdf .doc .docx .txt .xls .xlsx</span>
                     </label>
-                    <button type="submit" className="submit-file-button">
+                    <button type="submit" className="submit-file-button gradient-button">
                         <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"/>
                             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/>

@@ -7,6 +7,8 @@ import Navbar from './components/Navbar'
 import Files from './pages/Files'
 import { ToastContainer, Bounce } from 'react-toastify';
 import ProtectedRoute from "./components/ProtectedRoute"
+import Lightbox from "./components/Lightbox"
+import "./styles/lightbox.css"
 
 function App() {
 
@@ -33,6 +35,7 @@ function App() {
           theme="colored"
           transition={Bounce}
         />
+        <Lightbox />
       </div>
     </>
   )
