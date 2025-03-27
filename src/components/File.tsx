@@ -17,17 +17,12 @@ export default function File({ file }: FileProps) {
 
     async function handleFileDownload() {
         try {
-            const response = await fetch(file.file_url, {
-                mode: 'cors',
-                headers: {
-                    'Access-Control-Allow-Origin': '*'
-                }
-            });
+            const response = await fetch(file.file_url);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const blob = await response.blob();
 
             const downloadUrl = window.URL.createObjectURL(blob);

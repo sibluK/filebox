@@ -10,9 +10,19 @@ app.use(express.json());
 
 app.use(cors({
     origin: 'http://localhost:5173',
-    methods: 'GET,POST,PUT,HEAD',
-    allowedHeaders: ['Content-Type', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Headers'],
-    exposedHeaders: ['ETag', 'Content-Length', 'Content-Type', 'Content-Disposition'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'HEAD'],
+    allowedHeaders: [
+        'Content-Type',
+        'Access-Control-Allow-Origin',
+        'Access-Control-Allow-Headers',
+        'Access-Control-Allow-Methods'
+    ],
+    exposedHeaders: [
+        'ETag',
+        'Content-Length',
+        'Content-Type',
+        'Content-Disposition'
+    ],
     credentials: true
 }));
 
