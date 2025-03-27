@@ -20,16 +20,16 @@ export default async function generateUploadURL() {
     const rawBytes = await randomBytes(16);
     const imageName = rawBytes.toString('hex');
 
-    const params = ({
+    const params = {
         Bucket: bucketName,
         Key: imageName,
         Expires: 60,
-        ContentType: 'application/octet-stream', 
-        ACL: 'public-read', 
+        ContentType: 'application/octet-stream',
+        ACL: 'public-read',
         Metadata: {
-            'Access-Control-Allow-Origin': 'http://localhost:5173'
+            'Access-Control-Allow-Origin': '*'
         }
-    });
+    };
 
     const uploadURL = await s3.getSignedUrlPromise('putObject', params);
     return uploadURL;

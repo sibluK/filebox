@@ -1,8 +1,12 @@
 import { toast } from "react-toastify";
 import { FileProps } from "../interfaces/interfaces";
 import '../styles/file.css';
+import { useState } from "react";
 
 export default function File({ file }: FileProps) {
+
+    const [toggler, setToggler] = useState(false);
+
     const file_name = file.file_url.split('/').pop();
     const file_extension = file.file_type.split('/').pop()?.toLowerCase();
 
@@ -13,7 +17,17 @@ export default function File({ file }: FileProps) {
 
     async function handleFileDownload() {
         try {
-            const response = await fetch(file.file_url);
+            const response = await fetch(file.file_url, {
+                mode: 'cors',
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                }
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const blob = await response.blob();
 
             const downloadUrl = window.URL.createObjectURL(blob);
@@ -42,7 +56,7 @@ export default function File({ file }: FileProps) {
 
     return (
         <div className="file-wrapper">
-        <div className="file-content">
+        <div className="file-content" onClick={() => setToggler(!toggler)}>
             {isImage && (
                 <img 
                     className="file-image lightbox-trigger" 

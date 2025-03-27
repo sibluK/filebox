@@ -12,6 +12,7 @@
   "dependencies": {
     "@clerk/clerk-react": "^5.25.2",
     "axios": "^1.8.4",
+    "fslightbox-react": "^1.8.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-router": "^7.4.0",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
+    "@types/fslightbox-react": "^1.8.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react-swc": "^3.8.0",
