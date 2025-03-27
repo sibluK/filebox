@@ -3,11 +3,16 @@
 }
 
 .search-bar {
-    border: 1px solid lightgray;
+    outline: 1px solid var(--accent-color);
     border-radius: 5px;
     padding: 10px;
     font-size: 1em;
     margin-left: auto;
+    border: none;
+}
+
+.search-bar:focus {
+    outline: 2px solid var(--accent-color);
 }
 
 .clear-input {

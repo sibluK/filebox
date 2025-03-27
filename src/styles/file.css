@@ -1,22 +1,27 @@
 .file-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: center;
     border-radius: 5px;
     box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+    justify-content: space-between;
 }
 
 .file-content {
-    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 0;
 }
 
 .file-image,
 .file-video,
 .file-iframe {
-    max-height: 300px;
+    max-height: 250px;
+    max-width: 300px;
     object-fit: cover;
     border-radius: 5px;
     cursor: pointer;
+    border: none;
 }
 
 .file-information-wrapper {
@@ -49,5 +54,12 @@
 @media screen and (max-width: 600px) {
     .file-wrapper {
         width: 100%;
+    }
+
+    .file-image,
+    .file-video,
+    .file-iframe {
+        min-width: 100%;
+
     }
 }

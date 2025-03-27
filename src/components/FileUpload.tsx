@@ -14,10 +14,32 @@ export default memo(function FileUpload({ setFileURL, setFiles } : FileUploadPro
 
     const [file, setFile] = useState<File | null>(null);
     const [error, setError] = useState<string>("");
+    const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const backend_url = import.meta.env.VITE_BACKEND_URL;
 
     const { user } = useUser();
+
+    const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(true);
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+
+        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            setFile(e.dataTransfer.files[0]);
+            if (fileInputRef.current) {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(e.dataTransfer.files[0]);
+                fileInputRef.current.files = dataTransfer.files;
+            }
+        }
+    };
 
     async function handleFileUpload(e: React.FormEvent) {
         e.preventDefault();
@@ -27,8 +49,8 @@ export default memo(function FileUpload({ setFileURL, setFiles } : FileUploadPro
             const max_file_size = 5;
 
             if(file_size_mb > max_file_size) {
-                //setError("File is too large. Max size is 10MB")
-                toast.error("File is too large. Max size is 5MB")
+                setError("File is too large. Max size is 5 MB")
+                toast.error("File is too large. Max size is 5 MB")
                 return;
             }
 
@@ -88,11 +110,11 @@ export default memo(function FileUpload({ setFileURL, setFiles } : FileUploadPro
                 }
 
             } catch (error) {
-                console.error("Failed to generate upload URL", error);
-                setError("Failed to generate upload URL")
+                setError("Failed to generate upload URL.")
+                toast.error("Something went wrong. Try again later...")
             }
         } else {
-            //setError("No file selected")
+            setError("No file selected...")
             toast.error("No file selected...")
         }
     }
@@ -100,7 +122,6 @@ export default memo(function FileUpload({ setFileURL, setFiles } : FileUploadPro
     function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
         if (e.target.files && e.target.files.length > 0) {
             setFile(e.target.files[0]);
-            console.log(e.target.files[0].size / 1024 / 1024)
             setError("");
         }
     }
@@ -109,18 +130,18 @@ export default memo(function FileUpload({ setFileURL, setFiles } : FileUploadPro
         <>
             <div className="file-upload-wrapper">
                 <form className="form" onSubmit={handleFileUpload}>
-                    <label htmlFor="file-input" className="drop-container">
+                    <label 
+                        htmlFor="file-input" 
+                        className={`drop-container ${isDragging ? 'dragging' : ''}`}
+                        onDragOver={handleDragOver}
+                        onDrop={handleDrop}
+                    >
                         <span className="drop-title">Drop files here</span>
                         or
                         <input type="file" accept="*" id="file-input" ref={fileInputRef} onChange={handleFileInput}/>
                     </label>
                     <button type="submit" className="submit-file-button">Upload</button>
                 </form>
-                {error && (
-                    <div className="error-wrapper">
-                        <span>{error}</span>
-                    </div>
-                )}
             </div>
 
         </>
