@@ -10,6 +10,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
     padding: 10px 0;
 }
 
@@ -45,6 +46,14 @@
 .info-value {
     color: black;
     opacity: 0.9;
+}
+
+.delete-button {
+    background: red !important;
+}
+
+.delete-button:hover {
+    background: darkred !important;
 }
 
 @media screen and (max-width: 950px) {

@@ -55,6 +55,19 @@ app.post('/users/files', async (req, res) => {
     }
 })
 
+app.delete('/users/files/:id', async (req, res) => {
+    
+    const file_id = req.params.id;
+
+    try {
+        await pool.query('DELETE FROM user_files WHERE id = $1', [file_id]);
+        res.status(200).json({ message: 'File deleted successfully' });
+    } catch (error) {
+        console.log("Failed to delete user file");
+        res.status(500).json({ error: 'Interal Server Error'})
+    }
+})
+
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
