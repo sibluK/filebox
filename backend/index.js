@@ -73,7 +73,7 @@ const { Pool } = pkg;
 const pool = new Pool({ connectionString: process.env.NEON_POSTGRESQL_DB_STRING });
 
 // Endpoints
-app.get('/generate-url', async (res) => {
+app.get('/generate-url', async (req, res) => {
     try {
         const url = await generateUploadURL();
         res.send({ url });
