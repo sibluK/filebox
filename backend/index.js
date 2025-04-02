@@ -63,7 +63,7 @@ app.delete('/users/files/:id', async (req, res) => {
 
     try {
         await pool.query('DELETE FROM user_files WHERE id = $1', [file_id]);
-        await deleteFileFromS3(file_id);
+        await deleteFileFromS3(s3_key);
         res.status(200).json({ message: 'File deleted successfully' });
     } catch (error) {
         console.log("Failed to delete user file");

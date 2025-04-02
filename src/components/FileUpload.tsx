@@ -69,9 +69,9 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                 if (s3response.status === 200) {
                     // Set fields for file
                     const user_id = user?.id || "";
-                    const file_url = url.split('?')[1];
+                    const file_url = url.split('?')[0];
                     const s3_key = file_url.split('/').pop() || "";
-                    const name = file.name;
+                    const name = file.name.split('.')[0];
                     const type = file.type;
                     const size = file.size;
                     const now = new Date();

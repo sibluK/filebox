@@ -127,7 +127,7 @@ export default function File({ file }: FileProps) {
                 </div>
                 <div className="info-section">
                     <span className="info-header">Name:</span>
-                    <span className="info-value">{file_name}</span>
+                    <span className="info-value">{file.name}</span>
                 </div>
                 <div className="info-section">
                     <span className="info-header">Uploaded at:</span>
