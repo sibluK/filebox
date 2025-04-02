@@ -117,8 +117,12 @@ app.delete('/users/files/:id', verifyJwt, async (req, res) => {
     const s3_key = req.body.s3_key;
 
     try {
+        // Delete file objects
         await pool.query('DELETE FROM user_files WHERE id = $1', [file_id]);
-
+        
+        // Delte file tags
+        await pool.query('DELETE FROM file_tags WHERE file_id = $1', [file_id]);
+        
         // Delete from S3
         const s3Response = await deleteFileFromS3(s3_key);
         if (!s3Response) {
