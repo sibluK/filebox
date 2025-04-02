@@ -1,5 +1,5 @@
 import express from 'express';
-import generateUploadURL from './s3.js';
+import { generateUploadURL, deleteFile } from './s3.js';
 import cors from 'cors'
 import pkg from 'pg';
 
@@ -44,23 +44,26 @@ app.get('/users/:id/files', async (req, res) => {
     // For uploading information to the Neon postgresql database
 app.post('/users/files', async (req, res) => {
 
-    const { user_id, file_url, file_type, file_size, added_at } = req.body;
+    const { user_id, file_url, s3_key, name, type, size, added_at } = req.body;
 
     try {
-        await pool.query('INSERT INTO user_files (user_id, file_url, file_type, file_size, added_at) VALUES ($1, $2, $3, $4, $5)', [user_id, file_url, file_type, file_size, added_at]);
+        await pool.query('INSERT INTO user_files (user_id, url, type, size, added_at, s3_key, name) VALUES ($1, $2, $3, $4, $5, $6, $7)', [user_id, file_url, type, size, added_at, s3_key, name]);
         res.status(201).json({ message: 'File URL saved successfully' });
     } catch (error) {
         console.log("Failed to insert user file");
         res.status(500).json({ error: 'Interal Server Error'})
     }
 })
-
+    // For deleting user files from the database
+    // and deleting the file from the S3 bucket
 app.delete('/users/files/:id', async (req, res) => {
     
     const file_id = req.params.id;
+    const s3_key = req.body.s3_key; // Assuming you send the file key in the request body
 
     try {
         await pool.query('DELETE FROM user_files WHERE id = $1', [file_id]);
+        await deleteFile(file_id);
         res.status(200).json({ message: 'File deleted successfully' });
     } catch (error) {
         console.log("Failed to delete user file");

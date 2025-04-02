@@ -57,6 +57,7 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                 // Get the url for uploading to S3 from the server 
                 const response = await axios.get(`${backend_url}/generate-url`);
                 const url = response.data.url;
+                console.log("Upload URL:", url);
 
                 // Send the uploaded file to S3 bucket
                 const s3response = await axios.put(url, file, {
@@ -68,9 +69,11 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                 if (s3response.status === 200) {
                     // Set fields for file
                     const user_id = user?.id || "";
-                    const file_type = file.type;
-                    const file_url = url.split('?')[0];
-                    const file_size = file.size;
+                    const file_url = url.split('?')[1];
+                    const s3_key = file_url.split('/').pop() || "";
+                    const name = file.name;
+                    const type = file.type;
+                    const size = file.size;
                     const now = new Date();
                     const added_at = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ` +
                                       `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
@@ -87,23 +90,28 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                     await axios.post(`${backend_url}/users/files`, {
                         user_id,
                         file_url,
-                        file_type,
-                        file_size,
+                        s3_key,
+                        name,
+                        type,
+                        size,
                         added_at
                     });
 
                     // Update the files state
-                    setFiles((prevFiles: UserFile[]) => [
-                        ...prevFiles,
-                         { user_id, file_url, file_type, file_size, added_at }
-                    ]);
-
-                    toast.success(
-                        <div className="file-upload-toast">
-                            <p>File uploaded successfully!</p>
-                            <p>{file_size_mb.toFixed(2)} MB</p>
-                        </div>
-                    );
+                    try {
+                        const response = await axios.get(`${backend_url}/users/${user_id}/files`);
+                        const files = response.data;
+                        setFiles(files);
+                        toast.success(
+                            <div className="file-upload-toast">
+                                <p>File uploaded successfully!</p>
+                                <p>{file_size_mb.toFixed(2)} MB</p>
+                            </div>
+                        );
+                    } catch (error) {
+                        console.error("Error fetching files:", error);
+                        toast.error("Failed to update files. Please try again.");
+                    }
                 }
 
             } catch (error) {

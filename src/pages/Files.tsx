@@ -15,7 +15,7 @@ export default function Files() {
 
     const filteredFiles = useMemo(() => {
         return files.filter((file) => {
-            const file_name = file.file_url.split('/').pop()?.toLowerCase();
+            const file_name = file.url.split('/').pop()?.toLowerCase();
             return query === "" || file_name?.includes(query.toLowerCase());
         });
     }, [query, files]);

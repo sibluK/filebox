@@ -1,8 +1,10 @@
 export type UserFile = {
+    id: number;
     user_id: string;
-    file_id?: string;
-    file_url: string;
-    file_type: string;
-    file_size: number;
+    url: string;
+    s3_key: string;
+    name: string;
+    type: string;
+    size: number;
     added_at: string;
 }
