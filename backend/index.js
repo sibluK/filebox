@@ -9,8 +9,7 @@ import jwksRsa from 'jwks-rsa';
 const jwksClient = jwksRsa({
     jwksUri: process.env.CLERK_JWKS_URI,
     cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
+    rateLimit: true
 });
 
 export async function verifyJwt(req, res, next) {
@@ -22,7 +21,6 @@ export async function verifyJwt(req, res, next) {
     const token = authHeader.split(' ')[1];
 
     try {
-
         const decodedHeader = jwt.decode(token, { complete: true });
         console.log("JWT Header:", decodedHeader?.header);
 
@@ -51,14 +49,14 @@ export async function verifyJwt(req, res, next) {
 
 const app = express();
 
-app.use(express.json());
-
 app.use(cors({
     origin: 'http://localhost:5173',
     methods: 'GET,POST,PUT,DELETE', 
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
+
+app.use(express.json());
 
 //app.use(verifyJwt);
 
@@ -76,9 +74,9 @@ app.get('/generate-url', async (req, res) => {
 });
 
     // For getting user individual files  
-app.get('/users/:id/files', async (req, res) => {
+app.get('/users/:id/files', verifyJwt, async (req, res) => {
 
-    var user_id = req.params.id;
+    const user_id = req.params.id;
 
     if (req.user.sub !== user_id) {
         return res.status(403).send('Forbidden: You do not have permission to access this resource');
@@ -94,7 +92,7 @@ app.get('/users/:id/files', async (req, res) => {
 })
 
     // For uploading information to the Neon postgresql database
-app.post('/users/files', async (req, res) => {
+app.post('/users/files', verifyJwt, async (req, res) => {
 
     const { user_id, file_url, s3_key, name, type, size, added_at } = req.body;
 
@@ -108,7 +106,7 @@ app.post('/users/files', async (req, res) => {
 })
     // For deleting user files from the database
     // and deleting the file from the S3 bucket
-app.delete('/users/files/:id', async (req, res) => {
+app.delete('/users/files/:id', verifyJwt, async (req, res) => {
     
     const file_id = req.params.id;
     const s3_key = req.body.s3_key;
