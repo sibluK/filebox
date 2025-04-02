@@ -73,7 +73,7 @@ const { Pool } = pkg;
 const pool = new Pool({ connectionString: process.env.NEON_POSTGRESQL_DB_STRING });
 
 // Endpoints
-app.get('/generate-url', async (req, res) => {
+app.get('/generate-url', async (res) => {
     try {
         const url = await generateUploadURL();
         res.send({ url });
@@ -86,10 +86,6 @@ app.get('/generate-url', async (req, res) => {
 app.get('/users/:id/files', verifyJwt, async (req, res) => {
 
     const user_id = req.params.id;
-
-    if (req.user.sub !== user_id) {
-        return res.status(403).send('Forbidden: You do not have permission to access this resource');
-    }
 
     try {
         const { rows } = await pool.query('SELECT * FROM user_files WHERE user_id = $1', [user_id]);
@@ -106,8 +102,8 @@ app.post('/users/files', verifyJwt, async (req, res) => {
     const { user_id, file_url, s3_key, name, type, size, added_at } = req.body;
 
     try {
-        await pool.query('INSERT INTO user_files (user_id, url, type, size, added_at, s3_key, name) VALUES ($1, $2, $3, $4, $5, $6, $7)', [user_id, file_url, type, size, added_at, s3_key, name]);
-        res.status(201).json({ message: 'File URL saved successfully' });
+        const created_file = await pool.query('INSERT INTO user_files (user_id, url, type, size, added_at, s3_key, name) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *', [user_id, file_url, type, size, added_at, s3_key, name]);
+        res.status(201).json(created_file.rows[0]);
     } catch (error) {
         console.log("Failed to insert user file");
         res.status(500).json({ error: 'Interal Server Error'})
@@ -136,6 +132,41 @@ app.delete('/users/files/:id', verifyJwt, async (req, res) => {
         res.status(500).json({ error: 'Interal Server Error'})
     }
 })
+
+app.get('/files/:id/tags', verifyJwt, async (req, res) => {
+    const file_id = req.params.id;
+
+    if(file_id === undefined) {
+        return res.status(400).json({ error: 'File ID is required' }); 
+    }
+
+    try {
+        const { rows } = await pool.query('SELECT tag FROM file_tags WHERE file_id = $1', [file_id]);
+        res.json(rows);
+    } catch (error) {
+        console.log("Failed to fetch file tags");
+        res.status(500).json({ error: 'Interal Server Error'})
+    }
+});
+
+app.post('/files/:id/tags', verifyJwt, async (req, res) => {
+    const file_id = req.params.id;
+    const { tags } = req.body;
+
+    if(file_id === undefined || tags === undefined) {
+        return res.status(400).json({ error: 'File ID and tags are required' }); 
+    }
+
+    tags.forEach(async tag =>{
+        try {
+            await pool.query('INSERT INTO file_tags (file_id, tag) VALUES ($1, $2)', [file_id, tag]);
+            res.status(201).json({ message: 'Tags saved successfully' });
+        } catch (error) {
+            console.log("Failed to insert file tags");
+            res.status(500).json({ error: 'Interal Server Error'})
+        }
+    });
+});
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
