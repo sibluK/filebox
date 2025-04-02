@@ -15,6 +15,7 @@ const jwksClient = jwksRsa({
 export async function verifyJwt(req, res, next) {
     const authHeader = req.headers.authorization;
     console.log("Authorization Header:", authHeader);
+
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         console.error("Missing or invalid Authorization header");
         return res.status(401).send('Unauthorized: Missing or invalid token');
@@ -27,20 +28,24 @@ export async function verifyJwt(req, res, next) {
         const decodedHeader = jwt.decode(token, { complete: true });
         console.log("Decoded JWT Header:", decodedHeader?.header);
 
-        const getKey = (header, callback) => {
-            jwksClient.getSigningKey(header.kid, (err, key) => {
-                if (err) {
-                    console.error("Error fetching signing key:", err);
-                    return callback(err);
-                }
-                const signingKey = key.getPublicKey();
-                console.log("Signing Key:", signingKey);
-                callback(null, signingKey);
+        const getKey = (header) => {
+            return new Promise((resolve, reject) => {
+                jwksClient.getSigningKey(header.kid, (err, key) => {
+                    if (err) {
+                        console.error("Error fetching signing key:", err);
+                        return reject(err);
+                    }
+                    const signingKey = key.getPublicKey();
+                    console.log("Signing Key:", signingKey);
+                    resolve(signingKey);
+                });
             });
-        }
+        };
 
-        const decoded = jwt.verify(token, getKey, { algorithms: ['RS256'] });
+        const signingKey = await getKey(decodedHeader.header);
+        const decoded = jwt.verify(token, signingKey, { algorithms: ['RS256'] });
         console.log("Decoded JWT Payload:", decoded);
+
         req.user = decoded;
         next();
 
