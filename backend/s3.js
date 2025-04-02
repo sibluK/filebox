@@ -31,11 +31,11 @@ export async function generateUploadURL() {
     return uploadURL;
 }
 
-export async function deleteFileFromS3(file_name) {
+export async function deleteFileFromS3(s3_key) {
 
     const params = {
-        Bucket: bucket_name,
-        Key: file_name,
+        Bucket: bucketName,
+        Key: s3_key,
     };
 
     try {
