@@ -22,17 +22,23 @@ export async function verifyJwt(req, res, next) {
     const token = authHeader.split(' ')[1];
 
     try {
+
+        const decodedHeader = jwt.decode(token, { complete: true });
+        console.log("JWT Header:", decodedHeader?.header);
+
         const getKey = (header, callback) => {
             jwksClient.getSigningKey(header.kid, (err, key) => {
                 if (err) {
                     return callback(err);
                 }
                 const signingKey = key.getPublicKey();
+                console.log("Signing Key:", signingKey);
                 callback(null, signingKey);
             });
         }
 
         const decoded = jwt.verify(token, getKey, { algorithms: ['RS256'] });
+        console.log("Decoded JWT:", decoded);
         req.user = decoded;
         next();
 
