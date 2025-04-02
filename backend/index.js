@@ -60,7 +60,7 @@ app.use(cors({
     credentials: true,
 }));
 
-app.use(verifyJwt);
+//app.use(verifyJwt);
 
 const { Pool } = pkg;
 const pool = new Pool({ connectionString: process.env.NEON_POSTGRESQL_DB_STRING });
