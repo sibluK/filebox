@@ -1,5 +1,5 @@
 import express from 'express';
-import { generateUploadURL, deleteFile } from './s3.js';
+import { generateUploadURL, deleteFileFromS3 } from './s3.js';
 import cors from 'cors'
 import pkg from 'pg';
 
@@ -59,11 +59,11 @@ app.post('/users/files', async (req, res) => {
 app.delete('/users/files/:id', async (req, res) => {
     
     const file_id = req.params.id;
-    const s3_key = req.body.s3_key; // Assuming you send the file key in the request body
+    const s3_key = req.body.s3_key;
 
     try {
         await pool.query('DELETE FROM user_files WHERE id = $1', [file_id]);
-        await deleteFile(file_id);
+        await deleteFileFromS3(file_id);
         res.status(200).json({ message: 'File deleted successfully' });
     } catch (error) {
         console.log("Failed to delete user file");
