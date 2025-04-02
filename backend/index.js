@@ -2,8 +2,47 @@ import express from 'express';
 import { generateUploadURL, deleteFileFromS3 } from './s3.js';
 import cors from 'cors'
 import pkg from 'pg';
+import jwt from 'jsonwebtoken';
+import jwksRsa from 'jwks-rsa';
 
 // App config
+const jwksClient = jwksRsa({
+    jwksUri: process.env.CLERK_JWKS_URI,
+    cache: true,
+    rateLimit: true,
+    jwksRequestsPerMinute: 5,
+});
+
+export async function verifyJwt(req, res, next) {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).send('Unauthorized: Missing or invalid token');
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    try {
+        const getKey = (header, callback) => {
+            jwksClient.getSigningKey(header.kid, (err, key) => {
+                if (err) {
+                    return callback(err);
+                }
+                const signingKey = key.getPublicKey();
+                callback(null, signingKey);
+            });
+        }
+
+        const decoded = jwt.verify(token, getKey, { algorithms: ['RS256'] });
+        req.user = decoded;
+        next();
+
+    } catch (error) {
+        console.error('JWT verification error:', error);
+        return res.status(401).send('Unauthorized: Invalid token');
+    }
+
+}
+
 const app = express();
 
 app.use(express.json());
@@ -13,6 +52,8 @@ app.use(cors({
     methods: 'GET,POST,PUT,DELETE', 
     allowedHeaders: 'Content-Type'
 }));
+
+app.use(verifyJwt);
 
 const { Pool } = pkg;
 const pool = new Pool({ connectionString: process.env.NEON_POSTGRESQL_DB_STRING });
@@ -31,6 +72,10 @@ app.get('/generate-url', async (req, res) => {
 app.get('/users/:id/files', async (req, res) => {
 
     var user_id = req.params.id;
+
+    if (req.user.sub !== user_id) {
+        return res.status(403).send('Forbidden: You do not have permission to access this resource');
+    }
 
     try {
         const { rows } = await pool.query('SELECT * FROM user_files WHERE user_id = $1', [user_id]);
@@ -70,7 +115,7 @@ app.delete('/users/files/:id', async (req, res) => {
             console.error("Failed to delete file from S3");
             return res.status(500).json({ error: 'Failed to delete file from S3' });
         }
-        
+
         res.status(200).json({ message: 'File deleted successfully' });
     } catch (error) {
         console.log("Failed to delete user file");
