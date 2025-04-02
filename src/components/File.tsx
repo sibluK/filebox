@@ -3,10 +3,12 @@ import { FileProps } from "../interfaces/interfaces";
 import '../styles/file.css';
 import { useState } from "react";
 import axios from "axios";
+import { useAuth } from "@clerk/clerk-react";
 
-export default function File({ file }: FileProps) {
+export default function File({ file, setFiles }: FileProps) {
 
     const [toggler, setToggler] = useState(false);
+    const { getToken } = useAuth();
 
     const file_name = file.url.split('/').pop();
     const file_extension = file.type.split('/').pop()?.toLowerCase();
@@ -48,16 +50,21 @@ export default function File({ file }: FileProps) {
     }
 
     async function handleFileDeletion() {
+        const token = await getToken();
         if (confirm("Are you sure you want to delete this file?")) {
             try {
                 const response = await axios.delete(`${backend_url}/users/files/${file.id}`, {
                     data: {
                         s3_key: file.s3_key
+                    },
+                    headers: {
+                        Authorization: `Bearer ${token}`
                     }
                 });
     
                 if (response.status === 200) {
                     toast.success("File deleted successfully");
+                    setFiles((prevFiles) => prevFiles.filter((file) => file.id !== file.id));
                 } else {
                     toast.error("Failed to delete file");
                 }
@@ -122,20 +129,16 @@ export default function File({ file }: FileProps) {
                     </button>
                 </div>
                 <div className="info-section">
-                    <span className="info-header">ID:</span>
-                    <span className="info-value">{file.id}</span>
-                </div>
-                <div className="info-section">
                     <span className="info-header">Name:</span>
                     <span className="info-value">{file.name}</span>
                 </div>
                 <div className="info-section">
-                    <span className="info-header">Uploaded at:</span>
-                    <span className="info-value">{file.added_at}</span>
-                </div>
-                <div className="info-section">
                     <span className="info-header">Size:</span>
                     <span className="info-value">{file_size_mb.toFixed(2)} MB</span>
+                </div>
+                <div className="info-section">
+                    <span className="info-header">Uploaded at:</span>
+                    <span className="info-value">{file.added_at}</span>
                 </div>
             </div>
         </div>

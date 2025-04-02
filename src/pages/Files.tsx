@@ -33,7 +33,7 @@ export default function Files() {
                     <Search setQuery={handleQueryChange}/>
                 </div>
 
-                <FileList files={filteredFiles} loading={loading}/>
+                <FileList files={filteredFiles} loading={loading} setFiles={setFiles}/>
             </div>
         </>
     )

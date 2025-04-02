@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import axios from "axios";
 import { memo, useRef, useState } from "react";
 import "../styles/file-upload.css"
@@ -18,6 +18,7 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
     const backend_url = import.meta.env.VITE_BACKEND_URL;
 
     const { user } = useUser();
+    const { getToken } = useAuth();
 
     const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
         e.preventDefault();
@@ -54,10 +55,17 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
             }
 
             try {
+
+                // Get the token from Clerk
+                const token = await getToken();
+
                 // Get the url for uploading to S3 from the server 
-                const response = await axios.get(`${backend_url}/generate-url`);
+                const response = await axios.get(`${backend_url}/generate-url`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
                 const url = response.data.url;
-                console.log("Upload URL:", url);
 
                 // Send the uploaded file to S3 bucket
                 const s3response = await axios.put(url, file, {
@@ -86,7 +94,7 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                     }
                     setFile(null);
  
-                    // Send a request to the backend for storing the user id and the file info
+                    // Send a request to the backend to store the file info
                     await axios.post(`${backend_url}/users/files`, {
                         user_id,
                         file_url,
@@ -95,11 +103,19 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                         type,
                         size,
                         added_at
+                    }, {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
                     });
 
                     // Update the files state
                     try {
-                        const response = await axios.get(`${backend_url}/users/${user_id}/files`);
+                        const response = await axios.get(`${backend_url}/users/${user_id}/files`, {
+                            headers: {
+                                Authorization: `Bearer ${token}`
+                            }
+                        });
                         const files = response.data;
                         setFiles(files);
                         toast.success(
@@ -169,6 +185,11 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                         />
                         <span className="mime-types">.png .jpg .jpeg .mp4</span>
                     </label>
+                    {file && (
+                        <div>
+                            Apply tags to the file:
+                        </div>
+                    )}
                     <button type="submit" className="submit-file-button gradient-button">
                         <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"/>

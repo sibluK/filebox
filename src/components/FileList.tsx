@@ -3,7 +3,7 @@ import File from "../components/File"
 import "../styles/file-list.css"
 import FileLoading from "./FileLoading";
 
-export default function FileList({ files, loading }: FilesProps) {
+export default function FileList({ files, loading, setFiles }: FilesProps) {
 
     const reversedFiles = [...files].reverse();
 
@@ -12,7 +12,7 @@ export default function FileList({ files, loading }: FilesProps) {
             {!loading ? (
                 <div className="file-list-wrapper">
                     {reversedFiles.map((file, index) => (
-                        <File key={index} file={file}/>
+                        <File key={index} file={file} setFiles={setFiles}/>
                     ))}
                 </div>
             ) : (
