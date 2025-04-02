@@ -159,7 +159,7 @@ app.post('/files/:id/tags', verifyJwt, async (req, res) => {
 
     tags.forEach(async tag =>{
         try {
-            await pool.query('INSERT INTO file_tags (file_id, tag) VALUES ($1, $2)', [file_id, tag]);
+            await pool.query('INSERT INTO file_tags (file_id, tag_name) VALUES ($1, $2)', [file_id, tag]);
             res.status(201).json({ message: 'Tags saved successfully' });
         } catch (error) {
             console.log("Failed to insert file tags");
