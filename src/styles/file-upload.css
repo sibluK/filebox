@@ -19,25 +19,17 @@
   font-size: 1em;
 }
 
-.submit-file-button svg {
+.submit-file-button.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.cloudUploadSvg {
   transform: translateY(-2px);
 }
 
-.file-action-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.file-action-buttons button {
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  box-shadow: var(--box-shadow);
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
+.css-54pwck-MuiCircularProgress-svg {
+  color: white !important;
 }
 
 .mime-types {

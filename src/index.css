@@ -13,6 +13,7 @@
   -moz-osx-font-smoothing: grayscale;
 
   --accent-color: #3282ec;
+  --accent-color-hover: #2b6cc1;
   --accent-gradient: linear-gradient(
     121deg,
     rgba(33, 84, 190, 1) 0%,
