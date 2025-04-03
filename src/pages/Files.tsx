@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import FileUpload from "../components/FileUpload";
 import useUserFiles from "../hooks/useUserFiles";
 import FileList from "../components/FileList";
@@ -15,8 +15,7 @@ export default function Files() {
 
     const filteredFiles = useMemo(() => {
         return files.filter((file) => {
-            const file_name = file.url.split('/').pop()?.toLowerCase();
-            return query === "" || file_name?.includes(query.toLowerCase());
+            return query === "" || file.name?.includes(query.toLowerCase());
         });
     }, [query, files]);
 

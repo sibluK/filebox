@@ -120,7 +120,7 @@ app.delete('/users/files/:id', verifyJwt, async (req, res) => {
         // Delete file objects
         await pool.query('DELETE FROM user_files WHERE id = $1', [file_id]);
         
-        // Delte file tags
+        // Delete file tags
         await pool.query('DELETE FROM file_tags WHERE file_id = $1', [file_id]);
         
         // Delete from S3
@@ -160,16 +160,16 @@ app.post('/files/:id/tags', verifyJwt, async (req, res) => {
     if(file_id === undefined || tags === undefined) {
         return res.status(400).json({ error: 'File ID and tags are required' }); 
     }
-
-    tags.forEach(async tag =>{
-        try {
-            await pool.query('INSERT INTO file_tags (file_id, tag_name) VALUES ($1, $2)', [file_id, tag]);
-            res.status(201).json({ message: 'Tags saved successfully' });
-        } catch (error) {
-            console.log("Failed to insert file tags");
-            res.status(500).json({ error: 'Interal Server Error'})
+    
+    try {
+        for (const tag of tags) {
+            pool.query('INSERT INTO file_tags (file_id, tag_name) VALUES ($1, $2)', [file_id, tag])
         }
-    });
+        res.status(201).json({ message: 'Tags saved successfully' })
+    } catch (error) {
+        console.log("Failed to insert file tags");
+        res.status(500).json({ error: 'Interal Server Error'})
+    }
 });
 
 app.listen(3000, () => {

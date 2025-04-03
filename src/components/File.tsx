@@ -64,7 +64,7 @@ export default function File({ file, setFiles }: FileProps) {
     
                 if (response.status === 200) {
                     toast.success("File deleted successfully");
-                    setFiles((prevFiles) => prevFiles.filter((file) => file.id !== file.id));
+                    setFiles((prevFiles) => prevFiles.filter((f) => f.id !== file.id));
                 } else {
                     toast.error("Failed to delete file");
                 }

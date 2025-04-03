@@ -1,0 +1,86 @@
+.file-tag-addition-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.wrapper-header {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.wrapper-title {
+    font-size: 1em;
+    font-weight: 600;
+    color: var(--accent-color);
+}
+
+.wrapper-info {
+    font-size: 0.7em;
+    color: gray;
+}
+
+.tags-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.tag-item {
+    font-size: 0.8em;
+    padding: 3px 10px;
+    color: white;
+    background: var(--accent-gradient);
+    border-radius: 5px;
+    position: relative;
+    cursor: pointer;
+}
+
+.tag-item:hover svg {
+    display: none;
+}
+
+.tag-item:hover {
+    background: red;
+}
+
+.tag-form {
+    width: 100%;
+    position: relative;
+}
+
+.tag-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    box-shadow: var(--box-shadow);
+}
+
+.tag-input:focus {
+    outline: 2px solid var(--accent-color);
+}
+
+.tag-form button {
+    position: absolute;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    cursor: pointer;
+    right: 5px;
+    top: 5px;
+}
+
+.tag-form button:hover {
+    background: var(--accent-gradient-hover);
+}
+
+.tag-form button svg {
+    width: 10px;
+    height: 10px;
+}
+

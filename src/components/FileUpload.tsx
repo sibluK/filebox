@@ -4,6 +4,7 @@ import { memo, useRef, useState } from "react";
 import "../styles/file-upload.css"
 import { UserFile }  from "../types/types"
 import { toast } from 'react-toastify';
+import FileTagAddition from "./FileTagAddition";
 
 interface FileUploadProps {
     setFiles: React.Dispatch<React.SetStateAction<UserFile[]>>;
@@ -12,7 +13,7 @@ interface FileUploadProps {
 export default memo(function FileUpload({ setFiles } : FileUploadProps) {
 
     const [file, setFile] = useState<File | null>(null);
-    const [error, setError] = useState<string>("");
+    const [tags, setTags] = useState<string[]>([]);
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const backend_url = import.meta.env.VITE_BACKEND_URL;
@@ -44,22 +45,19 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
     async function handleFileUpload(e: React.FormEvent) {
         e.preventDefault();
         if (file) {
-
             const file_size_mb = file.size / 1024 / 1024;
             const max_file_size = 5;
 
             if(file_size_mb > max_file_size) {
-                setError("File is too large. Max size is 5 MB")
                 toast.error("File is too large. Max size is 5 MB")
                 return;
             }
 
             try {
-
-                // Get the token from Clerk
+                // Get the JWT token from Clerk
                 const token = await getToken();
 
-                // Get the url for uploading to S3 from the server 
+                // Get the url for uploading to S3
                 const response = await axios.get(`${backend_url}/generate-url`, {
                     headers: {
                         Authorization: `Bearer ${token}`
@@ -85,17 +83,9 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                     const now = new Date();
                     const added_at = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ` +
                                       `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-                
-                    setError("");
-    
-                    // Clear the file and the input
-                    if (fileInputRef.current) {
-                        fileInputRef.current.value = "";
-                    }
-                    setFile(null);
- 
+            
                     // Send a request to the backend to store the file info
-                    await axios.post(`${backend_url}/users/files`, {
+                    const created_file = await axios.post(`${backend_url}/users/files`, {
                         user_id,
                         file_url,
                         s3_key,
@@ -108,34 +98,37 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                             Authorization: `Bearer ${token}`
                         }
                     });
-
-                    // Update the files state
-                    try {
-                        const response = await axios.get(`${backend_url}/users/${user_id}/files`, {
+ 
+                    // If any tags are added, send them to the backend
+                    if(tags.length > 0) {
+                        await axios.post(`${backend_url}/files/${created_file.data.id}/tags`, {
+                            tags
+                        }, {
                             headers: {
                                 Authorization: `Bearer ${token}`
                             }
                         });
-                        const files = response.data;
-                        setFiles(files);
-                        toast.success(
-                            <div className="file-upload-toast">
-                                <p>File uploaded successfully!</p>
-                                <p>{file_size_mb.toFixed(2)} MB</p>
-                            </div>
-                        );
-                    } catch (error) {
-                        console.error("Error fetching files:", error);
-                        toast.error("Failed to update files. Please try again.");
                     }
+
+                    // Update the states and display success message
+                    setFiles((prevFiles) => [...prevFiles, created_file.data]);
+                    setTags([]);
+                    setFile(null);
+                    if (fileInputRef.current) {
+                        fileInputRef.current.value = "";
+                    }
+                    toast.success(
+                         <div className="file-upload-toast">
+                            <p>File uploaded successfully!</p>
+                            <p>{file_size_mb.toFixed(2)} MB</p>
+                        </div>
+                    );
                 }
 
             } catch (error) {
-                setError("Failed to generate upload URL.")
                 toast.error("Something went wrong. Try again later...")
             }
         } else {
-            setError("No file selected...")
             toast.error("No file selected...")
         }
     }
@@ -143,7 +136,6 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
     function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
         if (e.target.files && e.target.files.length > 0) {
             setFile(e.target.files[0]);
-            setError("");
 
             const file = e.target.files[0];
             const allowedTypes = [
@@ -156,9 +148,7 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
 
             if (allowedTypes.some(type => file.type.startsWith(type))) {
                 setFile(file);
-                setError("");
             } else {
-                setError("File type not supported");
                 toast.error("Please upload a supported file type");
             }
         }
@@ -185,11 +175,7 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                         />
                         <span className="mime-types">.png .jpg .jpeg .mp4</span>
                     </label>
-                    {file && (
-                        <div>
-                            Apply tags to the file:
-                        </div>
-                    )}
+                    {file && <FileTagAddition tags={tags} setTags={setTags}/>}
                     <button type="submit" className="submit-file-button gradient-button">
                         <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <g id="SVGRepo_bgCarrier" stroke-width="0"/>

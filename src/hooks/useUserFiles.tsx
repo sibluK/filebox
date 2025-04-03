@@ -17,12 +17,13 @@ export default function useUserFiles() {
         const fetchFiles = async () => {
             try {
                 const token = await getToken();
-                const response = await axios.get(user_files_url, {
+                const files = await axios.get(user_files_url, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
-                setFiles(response.data);
+                const tags = await axios.get
+                setFiles(files.data);
             }
             catch (error: any) {
                 setError(error.message || "Failed to fetch files");
