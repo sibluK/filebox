@@ -14,7 +14,6 @@ const jwksClient = jwksRsa({
 
 export async function verifyJwt(req, res, next) {
     const authHeader = req.headers.authorization;
-    console.log("Authorization Header:", authHeader);
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
         console.error("Missing or invalid Authorization header");
@@ -22,11 +21,9 @@ export async function verifyJwt(req, res, next) {
     }
 
     const token = authHeader.split(' ')[1];
-    console.log("JWT Token:", token);
 
     try {
         const decodedHeader = jwt.decode(token, { complete: true });
-        console.log("Decoded JWT Header:", decodedHeader?.header);
 
         const getKey = (header) => {
             return new Promise((resolve, reject) => {
@@ -36,7 +33,6 @@ export async function verifyJwt(req, res, next) {
                         return reject(err);
                     }
                     const signingKey = key.getPublicKey();
-                    console.log("Signing Key:", signingKey);
                     resolve(signingKey);
                 });
             });
@@ -44,7 +40,6 @@ export async function verifyJwt(req, res, next) {
 
         const signingKey = await getKey(decodedHeader.header);
         const decoded = jwt.verify(token, signingKey, { algorithms: ['RS256'] });
-        console.log("Decoded JWT Payload:", decoded);
 
         req.user = decoded;
         next();
@@ -160,7 +155,7 @@ app.post('/files/:id/tags', verifyJwt, async (req, res) => {
     if(file_id === undefined || tags === undefined) {
         return res.status(400).json({ error: 'File ID and tags are required' }); 
     }
-    
+
     try {
         for (const tag of tags) {
             pool.query('INSERT INTO file_tags (file_id, tag_name) VALUES ($1, $2)', [file_id, tag])
