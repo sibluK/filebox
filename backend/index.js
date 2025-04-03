@@ -159,7 +159,7 @@ app.post('/files/:id/tags', verifyJwt, async (req, res) => {
     try {
         const created_tags = [];
         for (const tag of tags) {
-            const created_tag = await pool.query('INSERT INTO file_tags (file_id, tag_name) VALUES ($1, $2)', [file_id, tag])
+            const created_tag = await pool.query('INSERT INTO file_tags (file_id, tag_name) VALUES ($1, $2) RETURNING *', [file_id, tag])
             created_tags.push(created_tag.rows[0]);
         }
         res.status(201).json(created_tags)
