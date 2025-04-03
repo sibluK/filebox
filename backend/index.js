@@ -140,7 +140,7 @@ app.get('/files/:id/tags', verifyJwt, async (req, res) => {
     }
 
     try {
-        const { rows } = await pool.query('SELECT tag FROM file_tags WHERE file_id = $1', [file_id]);
+        const { rows } = await pool.query('SELECT * FROM file_tags WHERE file_id = $1', [file_id]);
         res.json(rows);
     } catch (error) {
         console.log("Failed to fetch file tags");
