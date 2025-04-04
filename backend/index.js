@@ -97,7 +97,7 @@ app.post('/users/files', verifyJwt, async (req, res) => {
     const { user_id, file_url, s3_key, name, type, size, added_at, isPublic } = req.body;
 
     try {
-        const created_file = await pool.query('INSERT INTO user_files (user_id, url, type, size, added_at, s3_key, name, isPublic) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *', [user_id, file_url, type, size, added_at, s3_key, name, isPublic]);
+        const created_file = await pool.query('INSERT INTO user_files (user_id, url, type, size, added_at, s3_key, name, is_public) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *', [user_id, file_url, type, size, added_at, s3_key, name, isPublic]);
         res.status(201).json(created_file.rows[0]);
     } catch (error) {
         console.log("Failed to insert user file");
