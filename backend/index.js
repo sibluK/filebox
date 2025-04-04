@@ -148,6 +148,16 @@ app.get('/files/:id/tags', verifyJwt, async (req, res) => {
     }
 });
 
+app.get('/tags/popular', async (req, res) => {
+    try {
+        const { rows } = await pool.query('SELECT tag_name, COUNT(*) as count FROM file_tags GROUP BY tag_name ORDER BY count DESC LIMIT 10');
+        res.json(rows);
+    } catch (error) {
+        console.log("Failed to fetch popular tags");
+        res.status(500).json({ error: 'Interal Server Error'})
+    }
+});
+
 app.post('/files/:id/tags', verifyJwt, async (req, res) => {
     const file_id = req.params.id;
     const { tags } = req.body;
