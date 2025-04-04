@@ -43,9 +43,11 @@
 
 .form {
   border-radius: 20px;
-
   font-size: 1.125rem;
   max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .form-title {

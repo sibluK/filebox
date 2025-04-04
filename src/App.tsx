@@ -1,4 +1,4 @@
-import { SignUp } from "@clerk/clerk-react"
+import { SignedIn, SignUp } from "@clerk/clerk-react"
 import { Routes, Route } from 'react-router'
 import './App.css'
 import Home from './pages/Home'
@@ -18,8 +18,8 @@ function App() {
       <div className='content'>
         <Routes>
           <Route path='/' element={<Home />}/>
-          <Route path='/profile' element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-          <Route path='/files' element={<ProtectedRoute><Files /></ProtectedRoute>} />
+          <Route path='/profile' element={<SignedIn><Profile /></SignedIn>} />
+          <Route path='/files' element={<SignedIn><Files /></SignedIn>} />
           <Route path='/sign-up' element={<SignUp />} />
         </Routes>
         <ToastContainer

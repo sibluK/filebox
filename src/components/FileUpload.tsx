@@ -6,6 +6,7 @@ import { FileTag, UserFile }  from "../types/types"
 import { toast } from 'react-toastify';
 import FileTagAddition from "./FileTagAddition";
 import CircularProgress from '@mui/material/CircularProgress';
+import FileVisibilitySelection from "./FileVisibilitySelection";
 
 interface FileUploadProps {
     setFiles: React.Dispatch<React.SetStateAction<UserFile[]>>;
@@ -16,6 +17,7 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [tags, setTags] = useState<string[]>([]);
+    const [isPublic, setIsPublic] = useState<boolean>(false);
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const backend_url = import.meta.env.VITE_BACKEND_URL;
@@ -100,7 +102,8 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                         name,
                         type,
                         size,
-                        added_at
+                        added_at,
+                        isPublic,
                     }, {
                         headers: {
                             Authorization: `Bearer ${token}`
@@ -193,7 +196,13 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                         />
                         <span className="mime-types">.png .jpg .jpeg .mp4</span>
                     </label>
-                    {file && <FileTagAddition tags={tags} setTags={setTags}/>}
+                    {file && (
+                        <>
+                            <FileTagAddition tags={tags} setTags={setTags}/>
+                            <FileVisibilitySelection setIsPublic={setIsPublic} isPublic={isPublic} />
+                        </>
+                    )}
+                    
                     <button type="submit" disabled={loading} className={`submit-file-button gradient-button ${loading ? 'disabled': ''}`}>
                         {!loading ? (
                             <>

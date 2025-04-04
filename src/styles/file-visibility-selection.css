@@ -1,0 +1,22 @@
+.file-visibility-wrapper {
+
+}
+
+.visibility-options {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.visibility-option {
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    box-shadow: var(--box-shadow);
+    
+}
+
+.selected-visibility-option {
+    font-weight: 500;
+}
