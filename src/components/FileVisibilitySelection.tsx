@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/file-visibility-selection.css";
+import VisibilityOptions from "./VisibilityOptions";
 
 interface FileVisibilitySelectionProps {
     setIsPublic: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,24 +19,7 @@ export default function FileVisibilitySelection({ setIsPublic, isPublic }: FileV
             Default is <strong>private</strong>.
         </span>
       </div>
-      <div className="visibility-options">
-        <span
-          className={`visibility-option ${
-            isPublic ? "" : "selected-visibility-option gradient-button"
-          }`}
-          onClick={() => setIsPublic(false)}
-        >
-          Private
-        </span>
-        <span
-          className={`visibility-option ${
-            isPublic ? "selected-visibility-option gradient-button" : ""
-          }`}
-          onClick={() => setIsPublic(true)}
-        >
-          Public
-        </span>
-      </div>
+      <VisibilityOptions is_public={isPublic} setIsPublic={setIsPublic} />
     </div>
   );
 }

@@ -1,9 +1,4 @@
-.file-visibility-wrapper {
-
-}
-
 .visibility-options {
-    margin-top: 10px;
     display: flex;
     gap: 10px;
 }
@@ -12,9 +7,13 @@
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.9em;
+    font-size: 0.8em;
     box-shadow: var(--box-shadow);
-    
+    transition: background-color 0.1s ease-in-out;
+}
+
+.visibility-option:hover {
+    background-color: lightgray;
 }
 
 .selected-visibility-option {

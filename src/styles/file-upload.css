@@ -122,3 +122,9 @@
 #file-input::file-selector-button:hover {
   background-position: 0 0 !important;
 }
+
+.file-visibility-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}

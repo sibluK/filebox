@@ -20,6 +20,9 @@ export default function File({ file, setFiles }: FileProps) {
 
     const backend_url = import.meta.env.VITE_BACKEND_URL;
 
+    const visibleTags = file.tags.slice(0, 2).map(tag => tag.tag_name);
+    const remainingTagsCount = file.tags.length - 3;
+
     async function handleFileDownload() {
         try {
             const response = await fetch(file.url);
@@ -119,10 +122,17 @@ export default function File({ file, setFiles }: FileProps) {
                 </div>
                 <div className="info-section">
                     <span className="info-header">Tags:</span>
+                    {file.tags.length === 0 && (
+                        <span className="info-value">No tags applied</span>
+                    )}
+                    <span className="info-value"></span>
                     <div className="tags-wrapper">
-                        {file.tags.map((tag, index) => (
-                            <span key={index} className="info-value tag">{tag.tag_name}</span>
+                        {visibleTags.map((tag, index) => (
+                            <span key={index} className="info-value tag">{tag}</span>
                         ))}
+                        {remainingTagsCount > 0 && (
+                            <span className="info-value tag">+{remainingTagsCount} more</span>
+                        )}
                     </div>
                 </div>
             </div>

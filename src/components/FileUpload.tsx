@@ -131,6 +131,7 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                     setFiles((prevFiles) => [...prevFiles, fileWithTags]);
                     setTags([]);
                     setFile(null);
+                    setIsPublic(false);
                     if (fileInputRef.current) {
                         fileInputRef.current.value = "";
                     }

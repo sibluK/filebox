@@ -7,7 +7,7 @@ export type UserFile = {
     type: string;
     size: number;
     added_at: string;
-    isPublic?: boolean;
+    is_public?: boolean;
     tags: FileTag[];
 }
 
