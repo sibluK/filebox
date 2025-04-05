@@ -135,17 +135,17 @@ app.delete('/users/files/:id', verifyJwt, async (req, res) => {
 app.get('/files', async (req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const offset = parseInt(req.query.offset) || 0;
-    const search = req.query.search || '';
+    const search = req.query.query || '';
     const tag = req.query.tag || '';
 
     try {
         const query = `
-            SELECT DISTINCT uf.id, uf.url, uf.name, uf.added_at
+            SELECT uf.id, uf.url, uf.name
             FROM user_files uf
             LEFT JOIN file_tags ft ON ft.file_id = uf.id
             WHERE uf.is_public = true
               AND ($1 = '' OR LOWER(uf.name) LIKE LOWER('%' || $1 || '%'))
-              AND ($2 = '' OR ft.tag_name IS NULL OR LOWER(ft.tag_name) LIKE LOWER('%' || $2 || '%'))
+              AND ($2 = '' OR LOWER(ft.tag_name) LIKE LOWER('%' || $2 || '%'))
             ORDER BY uf.added_at DESC
             LIMIT $3 OFFSET $4;
         `;
