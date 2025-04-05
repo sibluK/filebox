@@ -142,10 +142,10 @@ app.get('/files', async (req, res) => {
         const query = `
             SELECT uf.id, uf.url, uf.name
             FROM user_files uf
-            JOIN file_tags ft ON ft.file_id = uf.id
+            LEFT JOIN file_tags ft ON ft.file_id = uf.id
             WHERE uf.is_public = true
-            AND uf.name = $1
-            AND ft.tag_name = $2
+              AND ($1 = '' OR LOWER(uf.name) LIKE LOWER('%' || $1 || '%'))
+              AND ($2 = '' OR LOWER(ft.tag_name) LIKE LOWER('%' || $2 || '%'))
             ORDER BY uf.added_at DESC
             LIMIT $3 OFFSET $4;
         `;
