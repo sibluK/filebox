@@ -177,7 +177,7 @@ app.get('/files/:id/tags', verifyJwt, async (req, res) => {
 app.get('/tags/popular', async (req, res) => {
     try {
         // Select the public tag_name and count from file_tags and user_files tables by joining them on file_id
-        const { rows } = await pool.query('SELECT ft.tag_name, COUNT(*) as count FROM file_tags ft JOIN user_files uf ON ft.file_id = uf.id WHERE uf.is_public = true GROUP BY ft.tag_name');
+        const { rows } = await pool.query('SELECT ft.tag_name, COUNT(*) as count FROM file_tags ft JOIN user_files uf ON ft.file_id = uf.id WHERE uf.is_public = true GROUP BY ft.tag_name LIMIT 10');
         res.json(rows);
     } catch (error) {
         console.log("Failed to fetch popular tags");
