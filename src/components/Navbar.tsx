@@ -16,16 +16,16 @@ export default function Navbar() {
         </Link>
       </div>
       <div className="nav-link">
-        <Link className="animated-text-underline" to={"/"}>Home</Link>
+        <Link to={"/"}>Home</Link>
       </div>
       <SignedOut>
         <div className="nav-link">
-            <Link className="animated-text-underline" to={"/sign-up"}>Sign Up</Link>
+            <Link to={"/sign-up"}>Sign Up</Link>
         </div>
       </SignedOut>
       <SignedIn>
         <div className="nav-link">
-          <Link className="animated-text-underline" to={"/files"}>Files</Link>
+          <Link to={"/files"}>Files</Link>
         </div>
         <UserButton />
       </SignedIn>

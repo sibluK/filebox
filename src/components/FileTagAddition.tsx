@@ -26,6 +26,11 @@ export default function FileTagAddition( { tags, setTags }: FileTagAdditionProps
             return;
         }
 
+        if(tag.length > 18) {
+            toast.error("Tag cannot be longer than 18 characters")
+            return;
+        }
+
         // If tag is not empty add it to the list
         if(tag && tag.length > 0) {
             setTags((prevTags) => [...prevTags, tag]);
@@ -50,7 +55,7 @@ export default function FileTagAddition( { tags, setTags }: FileTagAdditionProps
             </div>
 
             {tags.length > 0 && (
-                <div className="tags-wrapper">
+                <div className="added-tags-wrapper">
                     {tags.map((tag, index) => (
                         <div key={index} className="tag-item" onClick={() => handleTagDeletion(index)}>
                             <span className="tag-name">{tag}</span>

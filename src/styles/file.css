@@ -52,47 +52,16 @@
 }
 
 .file-action-buttons {
-    border-top: 1px solid lightgray;
-}
-
-.file-action-buttons button {
-    background-color: var(--accent-color);
-}
-
-.file-action-buttons button:hover {
-    background-color: var(--accent-color-hover)
-}
-
-.delete-button {
-    background: red !important;
-}
-
-.delete-button:hover {
-    background: darkred !important;
-}
-
-.file-action-buttons {
     display: flex;
     padding: 10px;
     justify-content: center;
     gap: 10px;
-}
-  
-.file-action-buttons button {
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    box-shadow: var(--box-shadow);
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    cursor: pointer;
+    border-top: 1px solid lightgray;
 }
 
 .tags-wrapper {
     display: flex;
-    max-width: 220px;
+    flex-wrap: wrap;
     gap: 5px;
     margin-top: 5px;
 }
@@ -103,8 +72,8 @@
     color: white;
     background: var(--accent-color);
     border-radius: 5px;
-    position: relative;
     box-shadow: var(--box-shadow);
+
 }
 
 @media screen and (max-width: 950px) {

@@ -2,23 +2,23 @@ import { useRef, useCallback, ChangeEvent } from "react";
 import "../styles/search-bar.css"
 
 interface SearchBarProps {
-    setQuery: (query: string) => void;
+    handleQuery: (query: string) => void;
 }
 
-export default function SearchBar({ setQuery }: SearchBarProps) {
+export default function SearchBar({ handleQuery }: SearchBarProps) {
 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
     const handleSearchInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        setQuery(e.target.value);
-    }, [setQuery]);
+        handleQuery(e.target.value);
+    }, [handleQuery]);
 
     const handleClearQuery = useCallback(() => {
-        setQuery("");
+        handleQuery("");
         if (inputRef.current) {
             inputRef.current.value = "";
         }
-    }, [setQuery]);
+    }, [handleQuery]);
 
     return (
         <div className="search-bar-wrapper">

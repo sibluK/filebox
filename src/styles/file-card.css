@@ -1,0 +1,67 @@
+.file-card-wrapper {
+    position: relative;
+    margin-bottom: 5px;
+    cursor: pointer;
+    overflow-y: hidden;
+}
+
+.file-card-wrapper:hover .file-card-image {
+    filter: brightness(0.6);
+}
+
+.file-card-wrapper:hover .hover-cover {
+    display: block;
+}
+
+.file-card-wrapper:hover .file-card-name {
+    display: flex;
+    animation: fade-top 0.15s ease-in-out forwards;
+}
+
+.file-card-wrapper:hover .file-card-actions-wrapper {
+    display: flex;
+    animation: fade-bottom 0.15s ease-in-out forwards;
+}
+
+.file-card-image {
+    width: 100%;
+    border-radius: 5px;
+    transition: filter 0.15s ease-in-out;
+}
+
+.file-card-name {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    display: none;
+    transform: translateY(-30px);
+}
+
+.file-card-actions-wrapper {
+    display: flex;
+    gap: 10px;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    transform: translateY(30px);
+    display: none;;
+}
+
+@keyframes fade-top {
+    0% {
+        transform: translateY(30px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-bottom {
+    0% {
+        transform: translateY(-30px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}

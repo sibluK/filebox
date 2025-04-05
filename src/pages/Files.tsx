@@ -30,10 +30,6 @@ export default function Files() {
         setQuery(input);
       }, [query])
 
-    useEffect(() => {
-        console.log("Filtered files:", filteredFiles);
-    }, [filteredFiles])
-
     return (
         <>
             <FileUpload setFiles={setFiles}/>
@@ -43,7 +39,7 @@ export default function Files() {
                         <h2 className="text-gradient">{user?.firstName}'s files ({filteredFiles.length}):</h2>
                         <VisibilityOptions is_public={visibilityFilter} setIsPublic={setVisibilityFilter}/>
                     </div>
-                    <Search setQuery={handleQueryChange}/>
+                    <Search handleQuery={handleQueryChange}/>
                 </div>
 
                 <FileList files={filteredFiles} loading={loading} setFiles={setFiles}/>

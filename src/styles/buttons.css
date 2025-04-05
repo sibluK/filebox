@@ -1,0 +1,24 @@
+.file-action-button {
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    box-shadow: var(--box-shadow);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    background-color: var(--accent-color);
+}
+
+.file-action-button:hover {
+    background-color: var(--accent-color-hover)
+}
+
+.delete-button {
+    background: red !important;
+}
+
+.delete-button:hover {
+    background: darkred !important;
+}

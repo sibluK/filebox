@@ -22,7 +22,7 @@
     color: gray;
 }
 
-.tags-wrapper {
+.added-tags-wrapper {
     display: flex;
     flex-wrap: wrap;
     gap: 5px;
