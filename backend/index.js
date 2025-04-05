@@ -132,6 +132,32 @@ app.delete('/users/files/:id', verifyJwt, async (req, res) => {
     }
 })
 
+app.get('/files', async (req, res) => {
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = parseInt(req.query.offset) || 0;
+    const search = req.query.search || '';
+    const tag = req.query.tag || '';
+
+    try {
+        const query = `
+            SELECT uf.id, uf.url, uf.name
+            FROM user_files uf
+            JOIN file_tags ft ON ft.file_id = uf.id
+            WHERE uf.is_public = true
+            AND uf.name = $1
+            AND ft.tag_name = $2
+            ORDER BY uf.added_at DESC
+            LIMIT $3 OFFSET $4;
+        `;
+
+        const { rows } = await pool.query(query, [search, tag, limit, offset]);
+        res.json(rows);
+    } catch (error) {
+        console.error("Failed to fetch files:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 app.get('/files/:id/tags', verifyJwt, async (req, res) => {
     const file_id = req.params.id;
 
@@ -150,7 +176,8 @@ app.get('/files/:id/tags', verifyJwt, async (req, res) => {
 
 app.get('/tags/popular', async (req, res) => {
     try {
-        const { rows } = await pool.query('SELECT tag_name, COUNT(*) as count FROM file_tags GROUP BY tag_name ORDER BY count DESC LIMIT 10');
+        // Select the public tag_name and count from file_tags and user_files tables by joining them on file_id
+        const { rows } = await pool.query('SELECT ft.tag_name, COUNT(*) as count FROM file_tags ft JOIN user_files uf ON ft.file_id = uf.id WHERE uf.is_public = true GROUP BY ft.tag_name');
         res.json(rows);
     } catch (error) {
         console.log("Failed to fetch popular tags");
