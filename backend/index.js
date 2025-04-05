@@ -140,13 +140,13 @@ app.get('/files', async (req, res) => {
 
     try {
         const query = `
-            SELECT DISTINCT uf.id, uf.url, uf.name
+            SELECT DISTINCT ON (uf.id) uf.id, uf.url, uf.name
             FROM user_files uf
             LEFT JOIN file_tags ft ON ft.file_id = uf.id
             WHERE uf.is_public = true
-              AND ($1 = '' OR LOWER(uf.name) LIKE LOWER('%' || $1 || '%'))
-              AND ($2 = '' OR LOWER(ft.tag_name) LIKE LOWER('%' || $2 || '%'))
-            ORDER BY uf.added_at DESC
+                AND ($1 = '' OR LOWER(uf.name) LIKE LOWER('%' || $1 || '%'))
+                AND ($2 = '' OR LOWER(ft.tag_name) LIKE LOWER('%' || $2 || '%'))
+            ORDER BY uf.id, uf.added_at DESC
             LIMIT $3 OFFSET $4;
         `;
 
