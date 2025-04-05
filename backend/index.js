@@ -140,7 +140,7 @@ app.get('/files', async (req, res) => {
 
     try {
         const query = `
-            SELECT uf.id, uf.url, uf.name
+            SELECT DISTINCT uf.id, uf.url, uf.name
             FROM user_files uf
             LEFT JOIN file_tags ft ON ft.file_id = uf.id
             WHERE uf.is_public = true
