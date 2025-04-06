@@ -3,9 +3,10 @@
     justify-content: end;
     align-items: center;
     background: var(--accent-gradient);
-    height: 60px;
+    height: 70px;
     padding: 20px 10%;
     gap: 40px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 .nav-link {

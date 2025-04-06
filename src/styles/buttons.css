@@ -20,6 +20,10 @@
     stroke: var(--accent-color);
 }
 
+.edit-button:hover svg path {
+    fill: var(--accent-color);
+}
+
 .delete-button {
     background: red !important;
 }
