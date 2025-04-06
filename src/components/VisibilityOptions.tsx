@@ -1,3 +1,4 @@
+import { useState } from "react";
 import "../styles/file-visibility-selection.css";
 
 interface VisibilityOptionsProps {
@@ -6,14 +7,15 @@ interface VisibilityOptionsProps {
 }
 
 export default function VisibilityOptions({ is_public, setIsPublic }: VisibilityOptionsProps) {
+
     return (
         <div className="visibility-options">
             <span
-                className={`visibility-option ${is_public ? "" : "selected-visibility-option gradient-button"}`}
+                className={`visibility-option ${is_public === false ? "selected-visibility-option" : ""}`}
                 onClick={() => setIsPublic(false)}>Private
             </span>
             <span
-                className={`visibility-option ${is_public ? "selected-visibility-option gradient-button" : ""}`}
+                className={`visibility-option ${is_public === true ? "selected-visibility-option" : ""}`}
                 onClick={() => setIsPublic(true)}>Public
             </span>
         </div>

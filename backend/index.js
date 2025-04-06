@@ -140,7 +140,7 @@ app.get('/files', async (req, res) => {
 
     try {
         const query = `
-            SELECT DISTINCT ON (uf.id) uf.id, uf.url, uf.name
+            SELECT DISTINCT ON (uf.id) uf.id, uf.url, uf.name, uf.type
             FROM user_files uf
             LEFT JOIN file_tags ft ON ft.file_id = uf.id
             WHERE uf.is_public = true
@@ -177,7 +177,7 @@ app.get('/files/:id/tags', verifyJwt, async (req, res) => {
 app.get('/tags/popular', async (req, res) => {
     try {
         // Select the public tag_name and count from file_tags and user_files tables by joining them on file_id
-        const { rows } = await pool.query('SELECT ft.tag_name, COUNT(*) as count FROM file_tags ft JOIN user_files uf ON ft.file_id = uf.id WHERE uf.is_public = true GROUP BY ft.tag_name LIMIT 10');
+        const { rows } = await pool.query('SELECT ft.tag_name, COUNT(*) as count FROM file_tags ft JOIN user_files uf ON ft.file_id = uf.id WHERE uf.is_public = true GROUP BY ft.tag_name ORDER BY count DESC LIMIT 10');
         res.json(rows);
     } catch (error) {
         console.log("Failed to fetch popular tags");

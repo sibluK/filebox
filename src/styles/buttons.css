@@ -8,11 +8,16 @@
     align-items: center;
     gap: 5px;
     cursor: pointer;
-    background-color: var(--accent-color);
+    background: var(--accent-color);
+    transition: all 0.1s ease-in-out;
 }
 
 .file-action-button:hover {
-    background-color: var(--accent-color-hover)
+    background-color: white;
+}
+
+.file-action-button:hover svg path {
+    stroke: var(--accent-color);
 }
 
 .delete-button {
@@ -21,4 +26,10 @@
 
 .delete-button:hover {
     background: darkred !important;
+    stroke: white !important;
 }
+
+.delete-button:hover svg path {
+    stroke: white !important;
+}
+

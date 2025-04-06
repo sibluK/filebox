@@ -11,9 +11,14 @@ export default function usePopularTags() {
     const popular_tags_url = `${backend_url}/tags/popular`;
 
     useEffect(() => {
-        const fetchFiles = async () => {
+        const controller = new AbortController();
+
+        const fetchPopularTags = async () => {
             try {
-                const popular_tags = await axios.get(popular_tags_url);
+                const popular_tags = await axios.get(popular_tags_url, {
+                    signal: controller.signal,
+                });
+
                 setTags(popular_tags.data);
             }
             catch (error: any) {
@@ -25,7 +30,11 @@ export default function usePopularTags() {
             }
         }
 
-        fetchFiles();
+        fetchPopularTags();
+
+        return () => {
+            controller.abort();
+        }
 
     }, [])
     

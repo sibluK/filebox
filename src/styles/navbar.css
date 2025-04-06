@@ -32,3 +32,49 @@
 .logo-wrapper svg {
     width: 40px;
 }
+
+.upload-file-nav-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid white;
+    box-shadow: var(--box-shadow);
+    padding: 3px 10px;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.1s ease-in-out;
+    background: white;
+    color: var(--accent-color);
+}
+
+.upload-file-nav-button svg g path {
+    fill: var(--accent-color);
+    transform: translateY(1px);
+    transition: all 0.1s ease-in-out;
+}
+
+.upload-file-nav-button:hover {
+    
+    color: white;
+    background: transparent;
+}
+
+.upload-file-nav-button:hover svg g path {
+    fill: white;
+}
+
+@media screen and (max-width: 600px) {
+    .navbar { 
+        padding: 20px 2%;
+        gap: 30px;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .navbar { 
+        padding: 20px 2%;
+        gap: 10px;
+    }
+}

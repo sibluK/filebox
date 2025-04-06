@@ -31,11 +31,18 @@ export default function FileTagAddition( { tags, setTags }: FileTagAdditionProps
             return;
         }
 
+        if(tags.length >= 10) {
+            toast.error("Number of tags limit reached")
+            return;
+        }
+
         // If tag is not empty add it to the list
-        if(tag && tag.length > 0) {
+        if(tag && tag.length > 0 && tags.length < 10) {
             setTags((prevTags) => [...prevTags, tag]);
             setTag("");
         }
+
+
     }
 
     function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -50,7 +57,10 @@ export default function FileTagAddition( { tags, setTags }: FileTagAdditionProps
     return (
         <div className="file-tag-addition-wrapper">
             <div className="wrapper-header">
-                <span className="wrapper-title">Tags</span>
+                <div>
+                    <span className="wrapper-title">Tags</span>
+                    <span className="wrapper-title tag-number"> ({tags.length}/10)</span>
+                </div>
                 <span className="wrapper-info">Tags will be used for optimizing the search of files</span>
             </div>
 

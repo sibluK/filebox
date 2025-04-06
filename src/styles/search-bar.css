@@ -10,6 +10,11 @@
     box-shadow: var(--box-shadow);
 }
 
+.search-bar::placeholder {
+    color: var(--accent-color);
+    font-weight: 500;
+}
+
 .search-bar:focus {
     outline: 2px solid var(--accent-color);
 }

@@ -9,13 +9,20 @@
     cursor: pointer;
     font-size: 0.8em;
     box-shadow: var(--box-shadow);
-    transition: background-color 0.1s ease-in-out;
+    transition: all 0.1s ease-in-out;
+    background: var(--accent-color);
+    color: white;
+    font-weight: 500;
+    font-size: 0.9em;
 }
 
 .visibility-option:hover {
-    background-color: lightgray;
+    background: white;
+    color: var(--accent-color)
 }
 
 .selected-visibility-option {
+    background: white;
+    color: var(--accent-color);
     font-weight: 500;
 }

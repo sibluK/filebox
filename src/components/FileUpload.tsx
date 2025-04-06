@@ -47,11 +47,6 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
     };
 
     async function handleFileUpload(e: React.FormEvent) {
-        if(loading) {
-            console.log("cancelled upload")
-            return;
-        }
-
         e.preventDefault();
         if (file) {
             const file_size_mb = file.size / 1024 / 1024;

@@ -24,37 +24,39 @@ export default function Home() {
         }
     }
 
-    function isTagSelected(selectedTag: string) {
-        return tag === selectedTag;
-    }
-
     return (
         <div className="home-page">
+            <div className="hero-section">
+                <div className="hero-text-section">
+
+                </div>
+            </div>
             <div className="home-page-header-container">
                 <div className="header">
-                    <span className="text-gradient">Popular tags</span>
                     <SearchBar handleQuery={setQuery}/>
                 </div>
                 <div className="popular-tags-wrapper">
-                    {tags.map((t) => (
+                    {tags
+                        .map((t, index) => (
                         <span 
                             onClick={() => handleTagClick(t.tag_name)} 
-                            key={t.id} 
-                            className={`popular-tag tag ${isTagSelected(t.tag_name) ? 'selected-tag' : tag !== "" ? 'not-selected-tag' : ""}`}
+                            key={index} 
+                            className={`popular-tag tag ${tag === t.tag_name ? 'selected-tag' : ""}`}
                         >
                         {t.tag_name}
                         </span>
                     ))}
                 </div>
             </div>
-            {loading && <FileLoading />}
-            {!loading && files.length === 0 && <span className="loading-text">No files found</span>}
-            {!loading && files.length > 0 && (
+            {files.length === 0 && <span className="loading-text">No files found</span>}
+            {!loading ? (
                 <div className="file-cards-wrapper">
                     {files.map((file, index) => (
                         <FileCard key={index} file={file}/>
                     ))}
                 </div>
+            ) : (
+                <FileLoading />
             )}
         </div>
     )

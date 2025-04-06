@@ -14,5 +14,8 @@
 }
 
 @media screen and (max-width: 600px) {
-
+  .content {
+    padding: 20px 2%;
+  }
+  
 }

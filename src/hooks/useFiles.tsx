@@ -17,10 +17,7 @@ export default function useFiles({ query, tag, limit, offset }: useFilesProps) {
     const backend_url = import.meta.env.VITE_BACKEND_URL;
     const files_url = `${backend_url}/files`;
 
-    
-
     useEffect(() => {
-
         const controller = new AbortController();
 
         const fetchFiles = async () => {
@@ -35,8 +32,6 @@ export default function useFiles({ query, tag, limit, offset }: useFilesProps) {
                         offset: offset
                     },
                 });
-
-                controller.abort();
                 
                 setFiles(files_response.data);
             } catch (error: any) {

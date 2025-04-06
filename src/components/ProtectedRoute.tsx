@@ -1,4 +1,5 @@
 import { useUser } from "@clerk/clerk-react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 interface ProtectedRouteProps {
@@ -7,11 +8,17 @@ interface ProtectedRouteProps {
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
-    const { isSignedIn } = useUser();
+    const { isSignedIn, isLoaded } = useUser();
     const navigate = useNavigate();
 
-    if (!isSignedIn) {
-        navigate('/sign-in');
+    useEffect(() => {
+        if (isLoaded && !isSignedIn) {
+            navigate('/sign-up');
+        }
+    }, [isSignedIn, isLoaded, navigate])
+
+    if(!isLoaded) {
+        return null;
     }
 
     return children;

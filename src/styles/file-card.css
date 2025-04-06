@@ -23,10 +23,16 @@
     animation: fade-bottom 0.15s ease-in-out forwards;
 }
 
+.file-card-wrapper:hover .video-file-mark {
+    display: flex;
+    animation: fade-bottom 0.15s ease-in-out forwards;
+}
+
 .file-card-image {
     width: 100%;
     border-radius: 5px;
     transition: filter 0.15s ease-in-out;
+    position: relative;
 }
 
 .file-card-name {
@@ -45,7 +51,16 @@
     top: 10px;
     right: 10px;
     transform: translateY(30px);
-    display: none;;
+    display: none;
+}
+
+.video-file-mark {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 50px;
+    transform: translateY(30px);
+    display: none;
 }
 
 @keyframes fade-top {

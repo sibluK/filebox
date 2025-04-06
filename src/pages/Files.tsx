@@ -42,7 +42,14 @@ export default function Files() {
                     <Search handleQuery={handleQueryChange}/>
                 </div>
 
-                <FileList files={filteredFiles} loading={loading} setFiles={setFiles}/>
+                {filteredFiles.length > 0 ? (
+                    <FileList files={filteredFiles} loading={loading} setFiles={setFiles}/>
+                ) : (
+                    <div>
+                        No {visibilityFilter ? "public" : "private"} files
+                    </div>
+                )}
+                
             </div>
         </>
     )
