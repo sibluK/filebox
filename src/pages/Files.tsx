@@ -10,7 +10,7 @@ import VisibilityOptions from "../components/VisibilityOptions";
 export default function Files() {
 
     const { files, loading, setFiles } = useUserFiles();
-    const [visibilityFilter, setVisibilityFilter] = useState<boolean>(false);
+    const [visibilityFilter, setVisibilityFilter] = useState<boolean | undefined>(false);
     const [query, setQuery] = useState<string>("");
 
     const { user } = useUser();

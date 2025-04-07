@@ -1,7 +1,6 @@
 import { toast } from "react-toastify";
 import { FileProps } from "../interfaces/interfaces";
 import '../styles/file.css';
-import { useState } from "react";
 import axios from "axios";
 import { useAuth } from "@clerk/clerk-react";
 import Download from "./buttons/Download";
@@ -9,9 +8,8 @@ import CopyClipboard from "./buttons/CopyClipboard";
 import Edit from "./buttons/Edit";
 import Delete from "./buttons/Delete";
 
-export default function File({ file, setFiles }: FileProps) {
-
-    const [toggler, setToggler] = useState(false);
+export default function File({ file, setFiles, openEditModal }: FileProps) {
+    
     const { getToken } = useAuth();
 
     const file_name = file.url.split('/').pop();
@@ -25,7 +23,7 @@ export default function File({ file, setFiles }: FileProps) {
     const backend_url = import.meta.env.VITE_BACKEND_URL;
 
     const visibleTags = file.tags.slice(0, 2).map(tag => tag.tag_name);
-    const remainingTagsCount = file.tags.length - 3;
+    const remainingTagsCount = file.tags.length - 2;
 
     async function handleFileDeletion() {
         const token = await getToken();
@@ -55,7 +53,7 @@ export default function File({ file, setFiles }: FileProps) {
 
     return (
         <div className="file-wrapper">
-            <div className="file-content" onClick={() => setToggler(!toggler)}>
+            <div className="file-content" >
                 {isImage && (
                     <img 
                         className="file-image lightbox-trigger" 
@@ -114,7 +112,7 @@ export default function File({ file, setFiles }: FileProps) {
             <div className="file-action-buttons">
                 <Download file_url={file.url}/>
                 <CopyClipboard file_url={file.url}/>
-                <Edit />
+                <Edit handleClick={openEditModal}/>
                 <Delete handleDeletion={handleFileDeletion}/>
             </div>
         </div>

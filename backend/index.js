@@ -68,7 +68,7 @@ const { Pool } = pkg;
 const pool = new Pool({ connectionString: process.env.NEON_POSTGRESQL_DB_STRING });
 
 // Endpoints
-app.get('/generate-url', async (req, res) => {
+app.get('/generate-url', verifyJwt, async (req, res) => {
     try {
         const url = await generateUploadURL();
         res.send({ url });
@@ -102,6 +102,27 @@ app.post('/users/files', verifyJwt, async (req, res) => {
     } catch (error) {
         console.log("Failed to insert user file");
         res.status(500).json({ error: 'Interal Server Error'})
+    }
+})
+
+app.put('/users/files/:id', verifyJwt, async (req, res) => {
+    const file_id = req.params.id;
+    const { name, is_public } = req.body;
+
+    if (!name || typeof is_public === 'undefined') {
+        return res.status(400).json({ error: 'Name and is_public status are required' });
+    }
+
+    try {
+        const updatedFile = await pool.query('UPDATE user_files SET name = $1, is_public = $2 WHERE id = $3', [name, is_public, file_id])
+        if (updatedFile.rowCount === 0) {
+            return res.status(404).json({ error: 'File not found' });
+        }
+
+        res.status(200).json(updatedFile.rows[0]);
+    } catch (error) {
+        console.error("Failed to update file:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 })
     // For deleting user files from the database
@@ -205,6 +226,23 @@ app.post('/files/:id/tags', verifyJwt, async (req, res) => {
         res.status(500).json({ error: 'Interal Server Error'})
     }
 });
+
+app.delete('/files/:id/tags', verifyJwt, async (req, res) => {
+    const file_id = req.params.id;
+    const { tags } = req.body;
+
+    if(file_id === undefined || tags === undefined) {
+        return res.status(400).json({ error: 'File ID and tags are required' }); 
+    }
+
+    try {
+        await pool.query('DELETE FROM file_tags WHERE file_id = $1 AND tag_name = ANY($2::text[])', [file_id, tags])
+        res.status(200).json({ message: 'Tags deleted successfully' });
+    } catch (error) {
+        console.log("Failed to delete tags");
+        res.status(500).json({ error: 'Interal Server Error'})
+    }
+})
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

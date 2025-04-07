@@ -8,11 +8,11 @@
     margin-left: auto;
     border: none;
     box-shadow: var(--box-shadow);
-    color: var(--accent-color);
+    color: gray;
 }
 
 .search-bar::placeholder {
-    color: var(--accent-color);
+    color: gray;
     font-weight: 500;
 }
 

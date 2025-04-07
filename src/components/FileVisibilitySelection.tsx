@@ -2,8 +2,8 @@ import React from "react";
 import VisibilityOptions from "./VisibilityOptions";
 
 interface FileVisibilitySelectionProps {
-    setIsPublic: React.Dispatch<React.SetStateAction<boolean>>;
-    isPublic: boolean;
+    setIsPublic: React.Dispatch<React.SetStateAction<boolean| undefined>>;
+    isPublic: boolean | undefined;
 }
 
 export default function FileVisibilitySelection({ setIsPublic, isPublic }: FileVisibilitySelectionProps) {

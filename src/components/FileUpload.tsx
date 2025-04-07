@@ -17,7 +17,7 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
     const [file, setFile] = useState<File | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [tags, setTags] = useState<string[]>([]);
-    const [isPublic, setIsPublic] = useState<boolean>(false);
+    const [isPublic, setIsPublic] = useState<boolean | undefined>(false);
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const backend_url = import.meta.env.VITE_BACKEND_URL;
@@ -37,6 +37,7 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
         setIsDragging(false);
 
         if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+            if(!isFileValidSize(e.dataTransfer.files[0])) return;
             setFile(e.dataTransfer.files[0]);
             if (fileInputRef.current) {
                 const dataTransfer = new DataTransfer();
@@ -46,16 +47,34 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
         }
     };
 
+    function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
+        if (e.target.files && e.target.files.length > 0) {
+            const file = e.target.files[0];
+
+            if(!isFileValidSize(file)) return;
+
+            setFile(e.target.files[0]);
+
+            const allowedTypes = [
+                // Images
+                'image/png',
+                'image/jpeg',
+                // Videos
+                'video/mp4',
+            ];
+
+            if (allowedTypes.some(type => file.type.startsWith(type))) {
+                setFile(file);
+            } else {
+                toast.error("Please upload a supported file type");
+            }
+        }
+    }
+
     async function handleFileUpload(e: React.FormEvent) {
         e.preventDefault();
         if (file) {
             const file_size_mb = file.size / 1024 / 1024;
-            const max_file_size = 5;
-
-            if(file_size_mb > max_file_size) {
-                toast.error("File is too large. Max size is 5 MB")
-                return;
-            }
 
             try {
                 setLoading(true);
@@ -150,25 +169,18 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
         }
     }
 
-    function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) {
-        if (e.target.files && e.target.files.length > 0) {
-            setFile(e.target.files[0]);
+    function isFileValidSize(file: File) {
+        const file_size_mb = file.size / 1024 / 1024;
+        const max_file_size = 5;
 
-            const file = e.target.files[0];
-            const allowedTypes = [
-                // Images
-                'image/png',
-                'image/jpeg',
-                // Videos
-                'video/mp4',
-            ];
-
-            if (allowedTypes.some(type => file.type.startsWith(type))) {
-                setFile(file);
-            } else {
-                toast.error("Please upload a supported file type");
+        if(file_size_mb > max_file_size) {
+            toast.error("File is too large. Max size is 5 MB")
+            if (fileInputRef.current) {
+                fileInputRef.current.value = "";
             }
+            return false;
         }
+        return true;
     }
 
     return (

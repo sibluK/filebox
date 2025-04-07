@@ -32,14 +32,10 @@
     font-size: 0.8em;
     padding: 3px 10px;
     color: white;
-    background: var(--accent-gradient);
+    background: var(--accent-color);
     border-radius: 5px;
     position: relative;
     cursor: pointer;
-}
-
-.tag-item:hover svg {
-    display: none;
 }
 
 .tag-item:hover {

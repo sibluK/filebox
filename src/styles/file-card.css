@@ -15,17 +15,17 @@
 
 .file-card-wrapper:hover .file-card-name {
     display: flex;
-    animation: fade-top 0.15s ease-in-out forwards;
+    animation: file-card-fade-top 0.15s ease-in-out forwards;
 }
 
 .file-card-wrapper:hover .file-card-actions-wrapper {
     display: flex;
-    animation: fade-bottom 0.15s ease-in-out forwards;
+    animation: file-card-fade-bottom 0.15s ease-in-out forwards;
 }
 
 .file-card-wrapper:hover .video-file-mark {
     display: flex;
-    animation: fade-bottom 0.15s ease-in-out forwards;
+    animation: file-card-fade-bottom 0.15s ease-in-out forwards;
 }
 
 .file-card-image {
@@ -63,7 +63,7 @@
     display: none;
 }
 
-@keyframes fade-top {
+@keyframes file-card-fade-top {
     0% {
         transform: translateY(30px);
     }
@@ -72,7 +72,7 @@
     }
 }
 
-@keyframes fade-bottom {
+@keyframes file-card-fade-bottom {
     0% {
         transform: translateY(-30px);
     }

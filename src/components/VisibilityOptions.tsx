@@ -1,8 +1,8 @@
 import "../styles/file-visibility-selection.css";
 
 interface VisibilityOptionsProps {
-    is_public: boolean;
-    setIsPublic: (is_public: boolean) => void;
+    is_public: boolean | undefined;
+    setIsPublic: (is_public: boolean| undefined) => void;
 }
 
 export default function VisibilityOptions({ is_public, setIsPublic }: VisibilityOptionsProps) {
