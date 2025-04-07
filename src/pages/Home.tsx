@@ -48,7 +48,7 @@ export default function Home() {
                     ))}
                 </div>
             </div>
-            {files.length === 0 && <span className="loading-text">No files found</span>}
+            {files.length === 0 && !loading && <span className="loading-text">No files found</span>}
             {!loading ? (
                 <div className="file-cards-wrapper">
                     {files.map((file, index) => (
