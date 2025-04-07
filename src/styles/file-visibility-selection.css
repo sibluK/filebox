@@ -7,22 +7,21 @@
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.8em;
     box-shadow: var(--box-shadow);
     transition: all 0.1s ease-in-out;
-    background: var(--accent-color);
-    color: white;
+    background: white;
+    color: var(--accent-color);
     font-weight: 500;
-    font-size: 0.9em;
+    font-size: 14px;
 }
 
 .visibility-option:hover {
-    background: white;
-    color: var(--accent-color)
+    background: var(--accent-color);
+    color: white;
 }
 
 .selected-visibility-option {
-    background: white;
-    color: var(--accent-color);
+    background: var(--accent-color);
+    color: white;
     font-weight: 500;
 }
