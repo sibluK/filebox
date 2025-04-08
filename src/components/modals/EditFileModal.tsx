@@ -6,6 +6,7 @@ import FileVisibilitySelection from "../FileVisibilitySelection";
 import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
+import { toast } from "react-toastify";
 
 interface EditFileModalProps {
     isOpen: boolean;
@@ -26,10 +27,6 @@ function EditFileModal({ isOpen, file, handleClose, setFiles }: EditFileModalPro
     const backend_url = import.meta.env.VITE_BACKEND_URL;
 
     const { getToken } = useAuth();
-
-    useEffect(() => {
-        console.log("Edit modal rendered");
-    }, [])
 
     useEffect(() => {
         if(file) {
@@ -113,9 +110,11 @@ function EditFileModal({ isOpen, file, handleClose, setFiles }: EditFileModalPro
                     : f
                 )
             )
+            toast.success("Changes saved")
         }
 
         setIsSaving(false);
+        
 
         if(!isSaving) {
             handleClose();

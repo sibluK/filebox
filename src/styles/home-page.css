@@ -49,6 +49,7 @@
 
 .loading-text {
     text-align: center;
+    color: var(--text-color)
 }
 
 .selected-tag {

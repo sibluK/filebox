@@ -10,7 +10,7 @@ export default function FileList({ files, loading, setFiles }: FilesProps) {
 
     const reversedFiles = [...files].reverse();
 
-    const [selectedFile, setSelectedFile] = useState<UserFile | null>(null); 
+    const [selectedFile, setSelectedFile] = useState<UserFile | null>(null);
 
     function openEditModal(file: UserFile) {
         setSelectedFile(file);

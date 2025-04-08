@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import FileUpload from "../components/FileUpload";
 import useUserFiles from "../hooks/useUserFiles";
 import FileList from "../components/FileList";
@@ -45,7 +45,7 @@ export default function Files() {
                 {filteredFiles.length > 0 ? (
                     <FileList files={filteredFiles} loading={loading} setFiles={setFiles}/>
                 ) : (
-                    <div>
+                    <div className="loading-text">
                         No {visibilityFilter ? "public" : "private"} files
                     </div>
                 )}

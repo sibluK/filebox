@@ -171,10 +171,10 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
 
     function isFileValidSize(file: File) {
         const file_size_mb = file.size / 1024 / 1024;
-        const max_file_size = 5;
+        const max_file_size = 10;
 
         if(file_size_mb > max_file_size) {
-            toast.error("File is too large. Max size is 5 MB")
+            toast.error("File is too large. Max size is 10 MB")
             if (fileInputRef.current) {
                 fileInputRef.current.value = "";
             }

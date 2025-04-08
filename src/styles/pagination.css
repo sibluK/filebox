@@ -1,0 +1,28 @@
+.pagination-wrapper {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+}
+
+.pagination-wrapper span {
+    color: var(--accent-color)
+}
+
+.pagination-wrapper button {
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    box-shadow: var(--box-shadow);
+    color: var(--accent-color);
+    font-weight: 500;
+    font-size: 0.9em;
+    transition: all 0.1s ease-in-out;
+    background-color: var(--bg-secondary);
+    cursor: pointer;
+}
+
+.pagination-wrapper button:hover {
+    background-color: var(--accent-color);
+    color: white;
+}

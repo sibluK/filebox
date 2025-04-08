@@ -1,20 +1,24 @@
 import SearchBar from "../components/SearchBar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import usePopularTags from "../hooks/usePopularTags";
 import "../styles/home-page.css"
 import useFiles from "../hooks/useFiles";
 import FileLoading from "../components/FileLoading";
 import FileCard from "../components/FileCard";
+import Pagination from "../components/Pagination";
 
 export default function Home() {
 
     const [query, setQuery] = useState<string>("")
     const [tag, setTag] = useState<string>("")
-    const [limit, setLimit] = useState<number>(20)
+    const [limit, setLimit] = useState<number>(10)
     const [offset, setOffset] = useState<number>(0)
+    const [page, setPage] = useState<number>(1);
 
     const { tags } = usePopularTags();
     const { files, loading } = useFiles({ query, tag, limit, offset });
+
+    const filteredFiles = [...files].reverse();
 
     function handleTagClick(selectedTag: string) {
         if(selectedTag !== tag) {
@@ -22,6 +26,16 @@ export default function Home() {
         } else {
             setTag("")
         }
+    }
+
+    function goToNextPage() {
+        setOffset((prevOffset) => prevOffset + limit)
+        setPage((prevPage) => prevPage + 1)
+    }
+
+    function goBackPage() {
+        setOffset((prevOffset) => prevOffset - limit)
+        setPage((prevPage) => prevPage - 1)
     }
 
     return (
@@ -51,13 +65,14 @@ export default function Home() {
             {files.length === 0 && !loading && <span className="loading-text">No files found</span>}
             {!loading ? (
                 <div className="file-cards-wrapper">
-                    {files.map((file, index) => (
+                    {filteredFiles.map((file, index) => (
                         <FileCard key={index} file={file}/>
                     ))}
                 </div>
             ) : (
                 <FileLoading />
             )}
+            <Pagination page={page} goToNextPage={goToNextPage} goBackPage={goBackPage} />
         </div>
     )
 }

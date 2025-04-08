@@ -9,10 +9,6 @@
     filter: brightness(0.6);
 }
 
-.file-card-wrapper:hover .hover-cover {
-    display: block;
-}
-
 .file-card-wrapper:hover .file-card-name {
     display: flex;
     animation: file-card-fade-top 0.15s ease-in-out forwards;
@@ -79,4 +75,47 @@
     100% {
         transform: translateY(0);
     }
+}
+
+@media screen and (max-width: 600px) {
+    .file-card-actions-wrapper {
+        display: flex;
+        gap: 10px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        transform: translateY(0);
+    }
+
+    .file-card-wrapper:hover .file-card-image {
+        filter: none;
+    }
+
+    .file-card-actions-wrapper button svg {
+        width: 25px;
+        height: 25px;
+    }
+
+    .file-card-wrapper:hover .file-card-name {
+        display: none;
+        animation: none;
+    }
+    
+    .file-card-wrapper:hover .file-card-actions-wrapper {
+        animation: none;
+    }
+    
+    .file-card-wrapper:hover .video-file-mark {
+        animation: none;
+    }
+
+    .file-card-name {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        color: white;
+        display: none;
+        transform: translateY(0);
+    }
+    
 }

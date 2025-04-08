@@ -8,6 +8,7 @@
     box-shadow: var(--box-shadow);
     border-radius: 5px;
     animation: fade-top 0.15s forwards;
+
 }
 
 .modal-body {
@@ -113,5 +114,29 @@
         transform: translate(-50%, -50%);
         top: 50%;
         left: 50%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: none;
+        width: fit-content;
+        height: 101vh;
+        animation: none;
+        padding: 50px 0;
+        border-radius: 0;
+    }
+
+    .modal-body {
+        flex-direction: column;
+
+    }
+
+    .edit-file-image {
+        max-height: 200px;
+        object-fit: cover;
     }
 }
