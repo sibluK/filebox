@@ -27,7 +27,7 @@
   
   .container .title {
     font-size: .9em;
-    color: #283149;
+    color: var(--text-color);
     text-align: center;
     margin-top: 15px;
   }

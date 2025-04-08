@@ -7,6 +7,7 @@
     padding: 20px 10%;
     gap: 40px;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    overflow-y: hidden;
 }
 
 .nav-link {
@@ -64,6 +65,42 @@
 
 .upload-file-nav-button:hover svg g path {
     fill: white;
+}
+
+.toggle-theme-button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+.theme-up {
+    animation: move-up 0.2s ease forwards;
+}
+
+.theme-down {
+    animation: move-down 0.2s ease forwards;
+}
+
+@keyframes move-up {
+    0% {
+        transform: translateY(0);
+
+    }
+    100% {
+        transform: translateY(-200%);
+
+    }
+}
+
+@keyframes move-down {
+    0% {
+        transform: translateY(200%);
+
+    }
+    100% {
+        transform: translateY(0);
+
+    }
 }
 
 @media screen and (max-width: 600px) {

@@ -72,9 +72,9 @@
   padding: 10px;
   border-radius: 10px;
   border: 2px dashed var(--accent-color);
-  color: #444;
+  color: var(--text-color);
   cursor: pointer;
-  transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+  transition: background 0.2s ease-in-out, border 0.2s ease-in-out, color 0.1s ease-in-out;
 }
 
 .drop-container:hover {
@@ -83,11 +83,11 @@
 }
 
 .drop-container:hover .drop-title {
-  color: #222;
+  color: var(--text-color);
 }
 
 .drop-title {
-  color: #444;
+  color: var(--text-color);
   font-size: 20px;
   font-weight: bold;
   text-align: center;
@@ -97,9 +97,9 @@
 #file-input {
   width: 350px;
   max-width: 100%;
-  color: #444;
+  color: var(--text-color) !important;
   padding: 2px;
-  background: #fff;
+  background-color: var(--bg-secondary);
   border-radius: 10px;
   border: 1px solid rgba(8, 8, 8, 0.288);
 }
@@ -120,8 +120,13 @@
   color: white !important;
 }
 
+
 #file-input::file-selector-button:hover {
   background-position: 0 0 !important;
+}
+
+#file-input::placeholder {
+  
 }
 
 .file-visibility-wrapper {

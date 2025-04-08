@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import "../styles/navbar.css";
 import { SignedIn, UserButton, SignedOut } from "@clerk/clerk-react";
+import ThemeChanger from "./ThemeChanger";
 
 export default function Navbar() {
   return (
@@ -41,6 +42,7 @@ export default function Navbar() {
         </div>
         <UserButton />
       </SignedIn>
+      <ThemeChanger />
     </nav>
   );
 }

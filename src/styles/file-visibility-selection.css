@@ -9,19 +9,20 @@
     cursor: pointer;
     box-shadow: var(--box-shadow);
     transition: all 0.1s ease-in-out;
-    background: white;
-    color: var(--accent-color);
+    color: var(--accent-color) !important;
+    background-color: var(--bg-secondary) !important;
     font-weight: 500;
     font-size: 14px;
 }
 
 .visibility-option:hover {
-    background: var(--accent-color);
-    color: white;
+    background: var(--accent-color) !important;
+    color: white !important;
 }
 
 .selected-visibility-option {
-    background: var(--accent-color);
-    color: white;
+    background: var(--accent-color) !important;
+    color: white !important;
     font-weight: 500;
+
 }

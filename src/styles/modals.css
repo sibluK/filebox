@@ -1,6 +1,6 @@
 .modal {
     position: fixed;
-    background-color: white;
+    background-color: var(--bg-secondary);
     transform: translate(-50%, -50%);
     padding: 15px;
     top: 50%;
@@ -8,12 +8,10 @@
     box-shadow: var(--box-shadow);
     border-radius: 5px;
     animation: fade-top 0.15s forwards;
-
 }
 
 .modal-body {
     display: flex;
-
 }
 
 .edit-file-image {
@@ -27,6 +25,10 @@
     margin-top: 10px;
     padding: 20px;
     gap: 20px;
+}
+
+.modal input {
+    background: var(--bg-primary);
 }
 
 .edit-file-name-wrapper {
@@ -44,6 +46,7 @@
     border: none;
     box-shadow: var(--box-shadow);
     color: gray;
+    background-color: var(--bg-secondary);
 }
 
 .edit-file-name-input:focus {
@@ -78,7 +81,7 @@
 }
 
 .cancel-edit-button {
-    background-color: white;
+    background-color: var(--bg-primary);
     color: var(--accent-color);
 }
 
@@ -94,6 +97,7 @@
     right: 15px;
     font-size: 1.7em;
     cursor: pointer;
+    color: var(--text-color)
 }
 
 .modal-close:hover {

@@ -5,6 +5,7 @@
     box-shadow: var(--box-shadow);
     justify-content: space-between;
     font-size: 0.8em;
+    background-color: var(--bg-secondary);
 }
 
 .file-content {
@@ -46,7 +47,7 @@
 }
 
 .info-value {
-    color: black;
+    color: var(--text-color);
     text-wrap: nowrap;
     max-width: 220px;
     overflow-x: hidden;

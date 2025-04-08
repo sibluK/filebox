@@ -1,5 +1,6 @@
 .search-bar-wrapper {
     position: relative;
+    
 }
 
 .search-bar {
@@ -9,6 +10,7 @@
     border: none;
     box-shadow: var(--box-shadow);
     color: gray;
+    background-color: var(--bg-secondary);
 }
 
 .search-bar::placeholder {
