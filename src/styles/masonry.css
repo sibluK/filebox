@@ -1,6 +1,6 @@
 .masonry-grid {
     display: flex;
-    gap: 16px;
+    gap: 12px;
 }
 
 .masonry-grid-column {
@@ -8,8 +8,6 @@
 }
 
 .masonry-item {
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     width: 100%;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }

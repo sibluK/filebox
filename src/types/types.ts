@@ -8,6 +8,7 @@ export type UserFile = {
     size: number;
     added_at: string;
     is_public?: boolean;
+    downloads: bigint;
     tags: FileTag[];
 }
 

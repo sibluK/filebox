@@ -23,7 +23,7 @@ function FileCard({ file }: FileCardProps) {
     }
 
     return (
-        <div className="file-card-wrapper">
+        <div className="file-card-wrapper masonry-item">
                 {isImage && (
                     <img 
                         className="file-card-image" 
@@ -47,7 +47,7 @@ function FileCard({ file }: FileCardProps) {
             
             <span className="file-card-name" onClick={handleFileClick}>{file.name}</span>
             <div className="file-card-actions-wrapper">
-                <Download file_url={file.url}/>
+                <Download file_id={file.id} file_url={file.url}/>
                 <CopyClipboard file_url={file.url}/>
             </div>
             {isVideo && (

@@ -62,8 +62,6 @@ app.use(cors({
 
 app.use(express.json());
 
-//app.use(verifyJwt);
-
 const { Pool } = pkg;
 const pool = new Pool({ connectionString: process.env.NEON_POSTGRESQL_DB_STRING });
 
@@ -89,7 +87,7 @@ app.get('/users/:id/files', verifyJwt, async (req, res) => {
         console.log("Failed to fetch user files");
         res.status(500).json({ error: 'Interal Server Error'})
     }
-})
+});
 
     // For uploading information to the Neon postgresql database
 app.post('/users/files', verifyJwt, async (req, res) => {
@@ -103,8 +101,9 @@ app.post('/users/files', verifyJwt, async (req, res) => {
         console.log("Failed to insert user file");
         res.status(500).json({ error: 'Interal Server Error'})
     }
-})
+});
 
+    // For updating the name or visibility status
 app.put('/users/files/:id', verifyJwt, async (req, res) => {
     const file_id = req.params.id;
     const { name, is_public } = req.body;
@@ -115,6 +114,7 @@ app.put('/users/files/:id', verifyJwt, async (req, res) => {
 
     try {
         const updatedFile = await pool.query('UPDATE user_files SET name = $1, is_public = $2 WHERE id = $3', [name, is_public, file_id])
+        
         if (updatedFile.rowCount === 0) {
             return res.status(404).json({ error: 'File not found' });
         }
@@ -124,7 +124,28 @@ app.put('/users/files/:id', verifyJwt, async (req, res) => {
         console.error("Failed to update file:", error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
-})
+});
+
+    // For incrementing file download number
+app.post('/files/downloads/:id', async (req, res) => {
+    const file_id = req.params.id;
+
+    try {
+        const response = await pool.query('SELECT downloads FROM user_files WHERE id = $1', [file_id]);
+
+        if (response.rows.length === 0) {
+            return res.status(404).json({ error: "File not found" });
+        }
+
+        const numberOfDownloads = BigInt(response.rows[0].downloads || 0);
+
+        await pool.query('UPDATE user_files SET downloads = $1 WHERE id = $2', [numberOfDownloads + BigInt(1), file_id]);
+
+        res.status(200).json({ message: 'Number of downloads increased'});
+    } catch (error) {
+        res.status(500).json({ error: "Failed to increase download count"});
+    } 
+});
     // For deleting user files from the database
     // and deleting the file from the S3 bucket
 app.delete('/users/files/:id', verifyJwt, async (req, res) => {
@@ -151,8 +172,9 @@ app.delete('/users/files/:id', verifyJwt, async (req, res) => {
         console.log("Failed to delete user file");
         res.status(500).json({ error: 'Interal Server Error'})
     }
-})
+});
 
+    // For getting public files with pagination, filtering, querying
 app.get('/files', async (req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const offset = parseInt(req.query.offset) || 0;
@@ -179,6 +201,7 @@ app.get('/files', async (req, res) => {
     }
 });
 
+    // For getting file tags
 app.get('/files/:id/tags', verifyJwt, async (req, res) => {
     const file_id = req.params.id;
 
@@ -195,6 +218,7 @@ app.get('/files/:id/tags', verifyJwt, async (req, res) => {
     }
 });
 
+    // For getting popular tags
 app.get('/tags/popular', async (req, res) => {
     try {
         // Select the public tag_name and count from file_tags and user_files tables by joining them on file_id
@@ -206,6 +230,7 @@ app.get('/tags/popular', async (req, res) => {
     }
 });
 
+    // For settings file tags
 app.post('/files/:id/tags', verifyJwt, async (req, res) => {
     const file_id = req.params.id;
     const { tags } = req.body;
@@ -227,6 +252,7 @@ app.post('/files/:id/tags', verifyJwt, async (req, res) => {
     }
 });
 
+    // For deleting file tags
 app.delete('/files/:id/tags', verifyJwt, async (req, res) => {
     const file_id = req.params.id;
     const { tags } = req.body;
@@ -242,7 +268,7 @@ app.delete('/files/:id/tags', verifyJwt, async (req, res) => {
         console.log("Failed to delete tags");
         res.status(500).json({ error: 'Interal Server Error'})
     }
-})
+});
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');

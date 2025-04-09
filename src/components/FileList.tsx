@@ -8,9 +8,8 @@ import EditFileModal from "./modals/EditFileModal";
 
 export default function FileList({ files, loading, setFiles }: FilesProps) {
 
-    const reversedFiles = useMemo(() => {
-        return [...files].reverse();
-    }, [files])
+    const reversedFiles = [...files].reverse();
+
 
     const [selectedFile, setSelectedFile] = useState<UserFile | null>(null);
 

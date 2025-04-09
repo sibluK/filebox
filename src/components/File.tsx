@@ -90,6 +90,10 @@ export default function File({ file, setFiles, openEditModal }: FileProps) {
                     <span className="info-value">{file.name}</span>
                 </div>
                 <div className="info-section">
+                    <span className="info-header">Downloads:</span>
+                    <span className="info-value">{file.downloads}</span>
+                </div>
+                <div className="info-section">
                     <span className="info-header">Size:</span>
                     <span className="info-value">{file_size_mb.toFixed(2)} MB</span>
                 </div>
@@ -110,7 +114,7 @@ export default function File({ file, setFiles, openEditModal }: FileProps) {
                 </div>
             </div>
             <div className="file-action-buttons">
-                <Download file_url={file.url}/>
+                <Download file_id={file.id} file_url={file.url}/>
                 <CopyClipboard file_url={file.url}/>
                 <Edit handleClick={openEditModal}/>
                 <Delete handleDeletion={handleFileDeletion}/>

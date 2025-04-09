@@ -1,11 +1,13 @@
 import { toast } from "react-toastify";
 import "../../styles/buttons.css";
+import axios from "axios";
 
 interface DownloadProps {
+    file_id: number;
     file_url: string;
 }
 
-export default function Download({ file_url }: DownloadProps) {
+export default function Download({ file_id, file_url }: DownloadProps) {
 
     async function handleFileDownload() {
         try {
@@ -25,6 +27,9 @@ export default function Download({ file_url }: DownloadProps) {
             link.click();
             link.remove();
             window.URL.revokeObjectURL(downloadUrl);
+
+            const backend_url = import.meta.env.VITE_BACKEND_URL;
+            await axios.post(`${backend_url}/files/downloads/${file_id}`);
     
             toast.success("Download started");
         } catch (error) {

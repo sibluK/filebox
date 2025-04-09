@@ -24,7 +24,7 @@ export default function Files() {
             const matchesVisibility = visibilityFilter === file.is_public;
             return matchesQuery && matchesVisibility;
         });
-    }, [query, visibilityFilter]);
+    }, [files, query, visibilityFilter]);
 
     const handleQueryChange = useCallback((input: string) => {
         setQuery(input);
@@ -42,14 +42,14 @@ export default function Files() {
                     <Search handleQuery={handleQueryChange}/>
                 </div>
 
-                {filteredFiles.length > 0 ? (
-                    <FileList files={filteredFiles} loading={loading} setFiles={setFiles}/>
-                ) : (
+                {!loading && filteredFiles.length === 0 && (
                     <div className="loading-text">
                         No {visibilityFilter ? "public" : "private"} files
                     </div>
                 )}
-                
+
+                <FileList files={filteredFiles} loading={loading} setFiles={setFiles}/>
+
             </div>
         </>
     )
