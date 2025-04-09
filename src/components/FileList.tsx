@@ -2,13 +2,15 @@ import { FilesProps } from "../interfaces/interfaces";
 import File from "../components/File"
 import "../styles/file-list.css"
 import FileLoading from "./FileLoading";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { UserFile } from "../types/types";
 import EditFileModal from "./modals/EditFileModal";
 
 export default function FileList({ files, loading, setFiles }: FilesProps) {
 
-    const reversedFiles = [...files].reverse();
+    const reversedFiles = useMemo(() => {
+        return [...files].reverse();
+    }, [files])
 
     const [selectedFile, setSelectedFile] = useState<UserFile | null>(null);
 

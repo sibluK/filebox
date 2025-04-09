@@ -1,4 +1,3 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router'
 import './index.css'
@@ -16,7 +15,6 @@ const theme = localStorage.getItem('theme');
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-    <StrictMode>
       <ClerkProvider 
         publishableKey={PUBLISHABLE_KEY} 
         afterSignOutUrl='/'
@@ -26,6 +24,5 @@ createRoot(document.getElementById('root')!).render(
         >
         <App />
       </ClerkProvider>
-    </StrictMode>
   </BrowserRouter>
 )

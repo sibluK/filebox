@@ -1,3 +1,4 @@
+import { memo } from "react";
 import "../styles/pagination.css"
 
 interface PaginationProps {
@@ -6,7 +7,7 @@ interface PaginationProps {
     goBackPage: () => void;
 }
 
-export default function Pagination({ page, goToNextPage, goBackPage }: PaginationProps) {
+function Pagination({ page, goToNextPage, goBackPage }: PaginationProps) {
 
     return (
         <div className="pagination-wrapper">
@@ -18,3 +19,5 @@ export default function Pagination({ page, goToNextPage, goBackPage }: Paginatio
         </div>
     );
 }
+
+export default memo(Pagination);

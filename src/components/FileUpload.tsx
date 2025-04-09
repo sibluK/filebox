@@ -1,6 +1,6 @@
 import { useAuth, useUser } from "@clerk/clerk-react";
 import axios from "axios";
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useRef, useState } from "react";
 import "../styles/file-upload.css"
 import { FileTag, UserFile }  from "../types/types"
 import { toast } from 'react-toastify';

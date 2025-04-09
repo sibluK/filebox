@@ -1,4 +1,4 @@
-import { Protect, SignedIn, SignUp } from "@clerk/clerk-react"
+import { SignUp } from "@clerk/clerk-react"
 import { Routes, Route } from 'react-router'
 import './App.css'
 import Home from './pages/Home'

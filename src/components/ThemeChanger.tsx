@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function ThemeChanger() {
 
@@ -8,10 +8,10 @@ export default function ThemeChanger() {
 
     const [animation, setAnimation] = useState<string>("");
 
-
         const body = document.body;
         if (theme === "light") {
             body.classList.remove("dark");
+            
         } else {
             body.classList.add("dark");
         }

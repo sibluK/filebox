@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../styles/file-tag-addition.css";
 import { toast } from 'react-toastify';
 
@@ -26,8 +26,8 @@ export default function FileTagAddition( { tags, setTags }: FileTagAdditionProps
             return;
         }
 
-        if(tag.length > 18) {
-            toast.error("Tag cannot be longer than 18 characters")
+        if(tag.length > 20) {
+            toast.error("Tag cannot be longer than 20 characters")
             return;
         }
 
@@ -41,8 +41,6 @@ export default function FileTagAddition( { tags, setTags }: FileTagAdditionProps
             setTags((prevTags) => [...prevTags, tag]);
             setTag("");
         }
-
-
     }
 
     function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -51,7 +49,7 @@ export default function FileTagAddition( { tags, setTags }: FileTagAdditionProps
     }
 
     function handleTagDeletion(index: number) {
-        setTags(tags.filter((tag, idx) => idx !== index))
+        setTags(tags.filter((_, idx) => idx !== index))
     }
 
     return (

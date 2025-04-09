@@ -24,7 +24,7 @@ export default function Files() {
             const matchesVisibility = visibilityFilter === file.is_public;
             return matchesQuery && matchesVisibility;
         });
-    }, [query, files, visibilityFilter]);
+    }, [query, visibilityFilter]);
 
     const handleQueryChange = useCallback((input: string) => {
         setQuery(input);

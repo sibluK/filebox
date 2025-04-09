@@ -7,6 +7,7 @@ export default function FilePage() {
     return (
         <>
             <h3>{file_id}</h3>
+            <h4>{file_name}</h4>
         </>
     );
 }

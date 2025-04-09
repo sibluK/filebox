@@ -13,6 +13,7 @@ export default function useFiles({ query, tag, limit, offset }: useFilesProps) {
     const [files, setFiles] = useState<UserFile[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
+    const [hasMore, setHasMore] = useState<boolean>(true);
 
     const backend_url = import.meta.env.VITE_BACKEND_URL;
     const files_url = `${backend_url}/files`;
@@ -34,6 +35,8 @@ export default function useFiles({ query, tag, limit, offset }: useFilesProps) {
                 });
                 
                 setFiles(files_response.data);
+
+                setHasMore(files_response.data.length === limit);
             } catch (error: any) {
                 setError(error.message || "Failed to fetch files");
             } finally {
@@ -49,5 +52,5 @@ export default function useFiles({ query, tag, limit, offset }: useFilesProps) {
 
     }, [query, tag, limit, offset]);
 
-    return { files, loading, error };
+    return { files, loading, error, hasMore };
 }

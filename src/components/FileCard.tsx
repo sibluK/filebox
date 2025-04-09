@@ -3,12 +3,13 @@ import "../styles/file-card.css";
 import Download from "./buttons/Download";
 import CopyClipboard from "./buttons/CopyClipboard";
 import { useNavigate } from "react-router";
+import { memo } from "react";
 
 interface FileCardProps {
     file: UserFile;
 }
 
-export default function FileCard({ file }: FileCardProps) {
+function FileCard({ file }: FileCardProps) {
     
     const navigate = useNavigate();
 
@@ -55,3 +56,5 @@ export default function FileCard({ file }: FileCardProps) {
         </div>
     );
 }
+
+export default memo(FileCard);

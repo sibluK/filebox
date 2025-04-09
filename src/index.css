@@ -37,6 +37,10 @@
 body {
   background-color: var(--bg-primary);
   transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
+  --bg-primary: white;
+  --bg-secondary: rgb(246, 246, 246);
+  --bg-secondary: white;
+  --text-color: black;
 }
 
 body.dark {

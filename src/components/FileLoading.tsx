@@ -1,6 +1,7 @@
+import { memo } from "react";
 import "../styles/file-loading.css"
 
-export default function FileLoading() {
+function FileLoading() {
     return (
         <div className="container">
             <div className="folder">
@@ -11,3 +12,5 @@ export default function FileLoading() {
         </div>
     );
 }
+
+export default memo(FileLoading);
