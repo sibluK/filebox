@@ -1,3 +1,26 @@
+.user-stats-wrapper {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 20px;
+    color: var(--accent-color);
+}
+
+.stat-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    outline: 1px solid var(--accent-color);
+    padding: 10px;
+    border-radius: 5px;
+    flex: 1;
+}
+
+.stat-value {
+    font-weight: 500;
+    font-size: 2.5em;
+}
+
 .files-section {
     min-width: 968px;
     position: relative;

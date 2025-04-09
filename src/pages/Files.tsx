@@ -26,6 +26,21 @@ export default function Files() {
         });
     }, [files, query, visibilityFilter]);
 
+    const numberOfDownloads = useMemo(() => {
+        return files.reduce((total, curr: any) => (
+            parseInt(curr.downloads) + total
+        ), 0)
+    }, [files])
+
+    const numberOfMbs = useMemo(() => {
+        return files.reduce((total, curr:any) => {
+            const size = parseInt(curr.size) || 0;
+            return total + size;
+        }, 0) / 1024 / 1024;
+    }, [files])
+
+    console.log(files);
+    
     const handleQueryChange = useCallback((input: string) => {
         setQuery(input);
       }, [query])
@@ -33,10 +48,37 @@ export default function Files() {
     return (
         <>
             <FileUpload setFiles={setFiles}/>
+
+            <div className="user-stats-wrapper">
+                <div className="stat-wrapper">
+                     <span className="stat-title">
+                        Uploaded
+                    </span>
+                    <span className="stat-value">
+                        {files.length}
+                    </span>
+                </div>
+                <div className="stat-wrapper">
+                     <span className="stat-title">
+                       Used
+                    </span>
+                    <span className="stat-value">
+                        {numberOfMbs.toFixed(2)} MB
+                    </span>
+                </div>
+                <div className="stat-wrapper">
+                    <span className="stat-title">
+                        Downloads
+                    </span>
+                    <span className="stat-value">
+                        {numberOfDownloads}
+                    </span>
+                </div>
+            </div>
             <div className="files-section">
                 <div className="file-list-header">
                     <div className="file-list-header-options">
-                        <h2 className="text-gradient">{user?.firstName}'s files ({filteredFiles.length}):</h2>
+                        <h2 className="text-gradient">{user?.firstName}'s files:</h2>
                         <VisibilityOptions is_public={visibilityFilter} setIsPublic={setVisibilityFilter}/>
                     </div>
                     <Search handleQuery={handleQueryChange}/>
