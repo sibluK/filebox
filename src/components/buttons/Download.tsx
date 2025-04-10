@@ -5,9 +5,10 @@ import axios from "axios";
 interface DownloadProps {
     file_id: number;
     file_url: string;
+    file_name: string;
 }
 
-export default function Download({ file_id, file_url }: DownloadProps) {
+export default function Download({ file_id, file_url, file_name }: DownloadProps) {
 
     async function handleFileDownload() {
         try {
@@ -20,8 +21,7 @@ export default function Download({ file_id, file_url }: DownloadProps) {
             const link = document.createElement('a');
             link.href = downloadUrl;
     
-            const fileName = file_url.split('/').pop() || 'download';
-            link.download = fileName;
+            link.download = file_name;
     
             document.body.appendChild(link);
             link.click();

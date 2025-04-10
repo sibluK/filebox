@@ -2,7 +2,7 @@
     position: relative;
     margin-bottom: 5px;
     cursor: pointer;
-    overflow-y: hidden;
+    overflow-y: hidden !important;
 }
 
 .file-card-wrapper:hover .file-card-image {
@@ -61,9 +61,11 @@
 
 @keyframes file-card-fade-top {
     0% {
+        opacity: 0;
         transform: translateY(30px);
     }
     100% {
+        opacity: 1;
         transform: translateY(0);
     }
 }

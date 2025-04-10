@@ -4,6 +4,7 @@ import cors from 'cors'
 import pkg from 'pg';
 import jwt from 'jsonwebtoken';
 import jwksRsa from 'jwks-rsa';
+import { Clerk, users } from "@clerk/clerk-sdk-node";
 
 // App config
 const jwksClient = jwksRsa({
@@ -11,6 +12,8 @@ const jwksClient = jwksRsa({
     cache: true,
     rateLimit: true
 });
+
+Clerk({ secretKey: process.env.CLERK_SECRET_KEY })
 
 export async function verifyJwt(req, res, next) {
     const authHeader = req.headers.authorization;
@@ -72,6 +75,25 @@ app.get('/generate-url', verifyJwt, async (req, res) => {
         res.send({ url });
     } catch (error) {
         res.status(500).send({ error: 'Failed to generate upload URL' });
+    }
+});
+
+    // For getting public info about any user
+app.get("/users/:id/info", async (req, res) => {
+    const user_id = req.params.id;
+
+    try {
+        const user = await users.getUser(user_id);
+
+        const publicInfo = {
+            name: `${user.firstName} ${user.lastName}`,
+            profileImageUrl: user.imageUrl,
+        };
+
+        res.status(200).json(publicInfo);
+    } catch (error) {
+        console.error("Failed to fetch user info:", error);
+        res.status(500).json({ error: "Failed to fetch user info" });
     }
 });
 
@@ -201,6 +223,38 @@ app.get('/files', async (req, res) => {
     }
 });
 
+app.get('/files/:id', async (req, res) => {
+    const file_id = req.params.id;
+
+    if(file_id === undefined) {
+        return res.status(400).json({ error: 'File ID is required' }); 
+    }
+
+    try {
+        const file_response = await pool.query("SELECT id, user_id, url, name, type, added_at, is_public, downloads FROM user_files WHERE id = $1", [file_id]);
+        
+        if (file_response.rows.length === 0) {
+            return res.status(404).json({ error: 'File not found' });
+        }
+
+        if (!file_response.rows[0].is_public) {
+            return res.status(403).json({ error: 'File is not public'});
+        }
+        
+        const tags_response = await pool.query('SELECT * FROM file_tags WHERE file_id = $1', [file_id]);
+        
+        const file = file_response.rows[0];
+
+        file.tags = tags_response.rows.map((tag) => tag.tag_name);
+
+        res.json(file);
+    } catch (error) {
+        console.error("Failed to fetch file:", error);
+        req.status(500).json({ error: 'Internal Server Error' })
+    }
+
+});
+
     // For getting file tags
 app.get('/files/:id/tags', verifyJwt, async (req, res) => {
     const file_id = req.params.id;
@@ -214,18 +268,6 @@ app.get('/files/:id/tags', verifyJwt, async (req, res) => {
         res.json(rows);
     } catch (error) {
         console.log("Failed to fetch file tags");
-        res.status(500).json({ error: 'Interal Server Error'})
-    }
-});
-
-    // For getting popular tags
-app.get('/tags/popular', async (req, res) => {
-    try {
-        // Select the public tag_name and count from file_tags and user_files tables by joining them on file_id
-        const { rows } = await pool.query('SELECT ft.tag_name, COUNT(*) as count FROM file_tags ft JOIN user_files uf ON ft.file_id = uf.id WHERE uf.is_public = true GROUP BY ft.tag_name ORDER BY count DESC LIMIT 10');
-        res.json(rows);
-    } catch (error) {
-        console.log("Failed to fetch popular tags");
         res.status(500).json({ error: 'Interal Server Error'})
     }
 });
@@ -266,6 +308,49 @@ app.delete('/files/:id/tags', verifyJwt, async (req, res) => {
         res.status(200).json({ message: 'Tags deleted successfully' });
     } catch (error) {
         console.log("Failed to delete tags");
+        res.status(500).json({ error: 'Interal Server Error'})
+    }
+});
+
+    // For getting popular tags
+app.get('/tags/popular', async (req, res) => {
+     try {
+        // Select the public tag_name and count from file_tags and user_files tables by joining them on file_id
+        const { rows } = await pool.query('SELECT ft.tag_name, COUNT(*) as count FROM file_tags ft JOIN user_files uf ON ft.file_id = uf.id WHERE uf.is_public = true GROUP BY ft.tag_name ORDER BY count DESC LIMIT 10');
+        res.json(rows);
+    } catch (error) {
+        console.log("Failed to fetch popular tags");
+        res.status(500).json({ error: 'Interal Server Error'})
+    }
+});
+
+app.get('/files/:id/related', async (req, res) => {
+    const file_id = req.params.id;
+
+    if(file_id === undefined) {
+        return res.status(400).json({ error: 'File ID is required' }); 
+    }
+
+    try {
+        const file_tags_response = await pool.query('SELECT * FROM file_tags WHERE file_id = $1', [file_id]);
+        const tags = file_tags_response.rows.map((tag) => tag.tag_name);
+
+        const query = `
+            SELECT DISTINCT uf.*
+            FROM user_files uf
+            JOIN file_tags ft ON uf.id = ft.file_id
+            WHERE uf.is_public = true
+            AND ft.tag_name = ANY($1::text[])
+            AND uf.id != $2
+            ORDER BY uf.added_at DESC
+            LIMIT 10
+        `;
+
+        const related_files_response = await pool.query(query, [tags, file_id]);
+
+        res.status(200).json(related_files_response.rows);
+    } catch (error) {
+        console.log("Failed to fetch related files");
         res.status(500).json({ error: 'Interal Server Error'})
     }
 });

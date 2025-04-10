@@ -1,0 +1,17 @@
+.user-info-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-info-wrapper img {
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.user-info-wrapper svg {
+    transform: scale(0.65);
+}
+

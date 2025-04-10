@@ -114,7 +114,7 @@ export default function File({ file, setFiles, openEditModal }: FileProps) {
                 </div>
             </div>
             <div className="file-action-buttons">
-                <Download file_id={file.id} file_url={file.url}/>
+                <Download file_name={file.name} file_id={file.id} file_url={file.url}/>
                 <CopyClipboard file_url={file.url}/>
                 <Edit handleClick={openEditModal}/>
                 <Delete handleDeletion={handleFileDeletion}/>
