@@ -6,7 +6,7 @@
 }
 
 .file-card-wrapper:hover .file-card-image {
-    filter: brightness(0.6);
+    filter: brightness(0.8);
 }
 
 .file-card-wrapper:hover .file-card-name {

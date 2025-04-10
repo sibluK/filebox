@@ -38,8 +38,6 @@ export default function Files() {
             return total + size;
         }, 0) / 1024 / 1024;
     }, [files])
-
-    console.log(files);
     
     const handleQueryChange = useCallback((input: string) => {
         setQuery(input);
@@ -54,7 +52,7 @@ export default function Files() {
                      <span className="stat-title">
                         Uploaded
                     </span>
-                    <span className="stat-value">
+                    <span className="stat-value text-gradient">
                         {files.length}
                     </span>
                 </div>
@@ -62,7 +60,7 @@ export default function Files() {
                      <span className="stat-title">
                        Used
                     </span>
-                    <span className="stat-value">
+                    <span className="stat-value text-gradient">
                         {numberOfMbs.toFixed(2)} MB
                     </span>
                 </div>
@@ -70,7 +68,7 @@ export default function Files() {
                     <span className="stat-title">
                         Downloads
                     </span>
-                    <span className="stat-value">
+                    <span className="stat-value text-gradient">
                         {numberOfDownloads}
                     </span>
                 </div>

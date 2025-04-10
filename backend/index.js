@@ -189,7 +189,7 @@ app.get('/files', async (req, res) => {
             WHERE uf.is_public = true
                 AND ($1 = '' OR LOWER(uf.name) LIKE LOWER('%' || $1 || '%'))
                 AND ($2 = '' OR LOWER(ft.tag_name) LIKE LOWER('%' || $2 || '%'))
-            ORDER BY uf.id, uf.added_at DESC
+            ORDER BY uf.id DESC, uf.added_at ASC
             LIMIT $3 OFFSET $4;
         `;
 

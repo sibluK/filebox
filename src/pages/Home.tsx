@@ -30,7 +30,7 @@ export default function Home() {
 
     useEffect(() => {
         function handleScroll() {
-            if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 1000) {
+            if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 2000) {
                 if (!isFetching && !loading && hasMore) {
                     setIsFetching(true);
                     setOffset((prevOffset) => prevOffset + limit);
@@ -54,7 +54,7 @@ export default function Home() {
         setQuery(input);
         setOffset(0);
         setLoadedFiles([]);
-    }, [])
+    }, [query])
 
     function handleTagClick(selectedTag: string) {
         if (selectedTag !== tag) {
