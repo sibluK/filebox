@@ -1,5 +1,5 @@
 import SearchBar from "../components/SearchBar";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import usePopularTags from "../hooks/usePopularTags";
 import "../styles/home-page.css"
 import useFiles from "../hooks/useFiles";
@@ -8,6 +8,8 @@ import FileCard from "../components/FileCard";
 import { UserFile } from "../types/types";
 import Masonry from "react-masonry-css";
 import "../styles/masonry.css";
+import SkeletonTags from "../components/skeletons/SkeletonTags";
+import SkeletonMasontry from "../components/skeletons/SkeletonMasonry";
 
 export default function Home() {
 
@@ -100,25 +102,34 @@ export default function Home() {
                 <div className="header">
                     <SearchBar handleQuery={handleQueryChange}/>
                 </div>
-                <div className="popular-tags-wrapper">
-                    {memoizedTags}
-                </div>
+                {tags.length === 0 ? (
+                    <SkeletonTags />
+                ) : (
+                    <div className="popular-tags-wrapper">
+                        {memoizedTags}
+                    </div>
+                )}
+                
             </div>
+            
             {loadedFiles.length === 0 && !loading && (
                 <span className="loading-text">No files found for '{query}'</span>
             )}
 
-            <Masonry
-                breakpointCols={breakpointColumnsObj}
-                className="masonry-grid"
-                columnClassName="masonry-grid-column"
-            >
-                {loadedFiles.map((file, index) => (
-                    <FileCard key={index} file={file} />
-                ))}
-            </Masonry>
-
-            {loading && <FileLoading />}
+            {loadedFiles.length === 0 ? (
+                <SkeletonMasontry />
+            ) : (
+                <Masonry
+                    breakpointCols={breakpointColumnsObj}
+                    className="masonry-grid"
+                    columnClassName="masonry-grid-column"
+                >
+                    {loadedFiles.map((file, index) => (
+                        <FileCard key={index} file={file} />
+                    ))}
+                </Masonry>
+            )}
+            
             {!hasMore && !loading && loadedFiles.length > 0 && (
                 <span className="loading-text">No more files to load</span>
             )}

@@ -1,0 +1,35 @@
+.skeleton-tags-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.skeleton-tag {
+    flex: 1;
+    height: 28px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    animation: pulse 1.5s infinite;
+    padding: 5px 10px;
+    min-width: 50px;
+}
+
+.skeleton-image {
+    background-color: #e0e0e0;
+    height: 400px;
+    animation: pulse 1.5s infinite;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+@keyframes pulse {
+    0% {
+        background-color: #e0e0e0;
+    }
+    50% {
+        background-color: #f0f0f0;
+    }
+    100% {
+        background-color: #e0e0e0;
+    }
+}

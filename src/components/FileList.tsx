@@ -5,6 +5,7 @@ import FileLoading from "./FileLoading";
 import { useState } from "react";
 import { UserFile } from "../types/types";
 import EditFileModal from "./modals/EditFileModal";
+import SkeletonMasontry from "./skeletons/SkeletonMasonry";
 
 export default function FileList({ files, loading, setFiles }: FilesProps) {
 
@@ -34,7 +35,7 @@ export default function FileList({ files, loading, setFiles }: FilesProps) {
                     ))}
                 </div>
             ) : (
-                <FileLoading />
+                <SkeletonMasontry />
             )}
 
             {selectedFile && (

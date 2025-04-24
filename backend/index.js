@@ -245,7 +245,11 @@ app.get('/files/:id', async (req, res) => {
         
         const file = file_response.rows[0];
 
-        file.tags = tags_response.rows.map((tag) => tag.tag_name);
+        file.tags = tags_response.rows.map((tag) => ({
+            id: tag.id,
+            file_id: tag.file_id,
+            tag_name: tag.tag_name,
+        }));
 
         res.json(file);
     } catch (error) {

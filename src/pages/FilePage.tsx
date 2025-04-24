@@ -1,6 +1,5 @@
 import { useParams } from "react-router";
-import { useEffect } from "react";
-import useSingleFile from "../hooks/useSingleFIle";
+import useSingleFile from "../hooks/useSingleFile";
 import Download from "../components/buttons/Download";
 import "../styles/file-page.css"
 import CopyClipboard from "../components/buttons/CopyClipboard";
@@ -14,11 +13,9 @@ export default function FilePage() {
 
     const { id: file_id } = useParams();
 
-    useEffect(() => {
-        console.log(file_id)
-    }, [file_id])
+    const numberId = file_id ? parseInt(file_id) : undefined;
 
-    const { file, fileLoading, relatedFiles, relatedLoading } = useSingleFile({ file_id });
+    const { file, fileLoading, relatedFiles, relatedLoading } = useSingleFile({ file_id: numberId });
 
     const breakpointColumnsObj = {
         default: 3,
@@ -63,7 +60,7 @@ export default function FilePage() {
                             <div className="detail-title">Tags</div>
                             <div className="tags-wrapper">
                                 {file?.tags.map((tag) => (
-                                    <span key={tag} className="popular-tag tag">{tag}</span>
+                                    <span key={tag.id} className="popular-tag tag">{tag.tag_name}</span>
                                 ))}
                             </div>
                             
@@ -99,8 +96,6 @@ export default function FilePage() {
                                 ))}
                             </Masonry>
                         )}
-                                    
-                                    
                     </div>
                 </div>
             </div>

@@ -1,10 +1,7 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { UserFile } from "../types/types";
-
-interface useSingleFileProps {
-    file_id: number | undefined;
-}
+import { useSingleFileProps } from "../interfaces/interfaces";
 
 export default function useSingleFile({ file_id }: useSingleFileProps) {
     const [file, setFile] = useState<UserFile>();
