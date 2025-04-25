@@ -1,28 +1,66 @@
 import SearchBar from "../components/SearchBar";
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import usePopularTags from "../hooks/usePopularTags";
 import "../styles/home-page.css"
 import useFiles from "../hooks/useFiles";
-import FileLoading from "../components/FileLoading";
 import FileCard from "../components/FileCard";
 import { UserFile } from "../types/types";
 import Masonry from "react-masonry-css";
 import "../styles/masonry.css";
 import SkeletonTags from "../components/skeletons/SkeletonTags";
 import SkeletonMasontry from "../components/skeletons/SkeletonMasonry";
+import useFileFilters from "../hooks/useFileFilters";
 
 export default function Home() {
-
-    const [query, setQuery] = useState<string>("")
-    const [tag, setTag] = useState<string>("")
-    const [offset, setOffset] = useState<number>(0)
-    const [loadedFiles, setLoadedFiles] = useState<UserFile[]>([])
-    const [isFetching, setIsFetching] = useState<boolean>(false);
+    const { query, tag, setFilters } = useFileFilters();
+    const [offset, setOffset] = useState<number>(0);
+    const [loadedFiles, setLoadedFiles] = useState<UserFile[]>([]);
 
     const limit = 10;
 
     const { tags } = usePopularTags();
     const { files, loading, hasMore } = useFiles({ query, tag, limit, offset });
+
+    const handleScroll = useCallback(() => {
+        const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
+        const documentHeight = document.documentElement.offsetHeight;
+        const scrollThreshold = documentHeight - 2000;
+
+        if (scrollPosition >= scrollThreshold) {
+            if (!loading && hasMore) {
+
+                setOffset((prevOffset) => prevOffset + limit);
+            }
+        }
+    }, [loading, hasMore, limit]);
+
+    const timeoutRef = useRef(0);
+
+    const debouncedScroll = useCallback(() => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+        
+        timeoutRef.current = setTimeout(() => {
+            handleScroll();
+        }, 200);
+    }, [handleScroll]);
+
+    useEffect(() => {
+        window.addEventListener('scroll', debouncedScroll);
+        
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+            window.removeEventListener('scroll', debouncedScroll);
+        };
+    }, [debouncedScroll]);
+
+    useEffect(() => {
+        setOffset(0);
+        setLoadedFiles([]);
+    }, [query, tag]);
 
     useEffect(() => {
         if (files.length > 0) {
@@ -30,93 +68,53 @@ export default function Home() {
         }
     }, [files]);
 
-    useEffect(() => {
-        function handleScroll() {
-            if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 2000) {
-                if (!isFetching && !loading && hasMore) {
-                    setIsFetching(true);
-                    setOffset((prevOffset) => prevOffset + limit);
-                }
-            }
-        }
 
-        const debounceScroll = debounce(handleScroll, 200);
-
-        window.addEventListener("scroll", debounceScroll);
-        return () => window.removeEventListener("scroll", debounceScroll);
-    }, [isFetching, loading, hasMore, limit]);
-
-    useEffect(() => {
-        if (!loading) {
-            setIsFetching(false);
-        }
-    }, [loading]);
-
-    const handleQueryChange = useCallback((input: string) => {
-        setQuery(input);
-        setOffset(0);
-        setLoadedFiles([]);
-    }, [query])
-
-    function handleTagClick(selectedTag: string) {
+    const handleTagClick = (selectedTag: string) => {
         if (selectedTag !== tag) {
-            setTag(selectedTag);
-            setOffset(0); 
+            setFilters({ tag: selectedTag });
+            setOffset(0);
             setLoadedFiles([]);
         } else {
-            setTag("");
+            setFilters({ tag: "" });
             setOffset(0);
             setLoadedFiles([]);
         }
-    }
-
-    function debounce(func: Function, wait: number) {
-        let timeout: any;
-        return (...args: any[]) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func(...args), wait);
-        };
-    }
-
-    const memoizedTags = useMemo(() => {
-        return tags.map((t, index) => (
-            <span
-                onClick={() => handleTagClick(t.tag_name)}
-                key={index}
-                className={`popular-tag tag ${tag === t.tag_name ? 'selected-tag' : ""}`}
-            >
-                {t.tag_name}
-            </span>
-        ))
-    }, [tags, tag])
+    };
 
     const breakpointColumnsObj = {
         default: 3,
         1100: 2,
         700: 1,
-    }
+    };
 
     return (
         <div className="home-page">
             <div className="home-page-header-container">
                 <div className="header">
-                    <SearchBar handleQuery={handleQueryChange}/>
+                    <SearchBar />
                 </div>
                 {tags.length === 0 ? (
                     <SkeletonTags />
                 ) : (
                     <div className="popular-tags-wrapper">
-                        {memoizedTags}
+                        {tags.map((t, index) => (
+                            <span
+                                onClick={() => handleTagClick(t.tag_name)}
+                                key={index}
+                                className={`popular-tag tag ${tag === t.tag_name ? "selected-tag" : ""}`}
+                            >
+                                {t.tag_name}
+                            </span>
+                        ))}
                     </div>
                 )}
-                
             </div>
-            
-            {loadedFiles.length === 0 && !loading && (
+
+            {loadedFiles.length === 0 && !hasMore && !loading && (
                 <span className="loading-text">No files found for '{query}'</span>
             )}
 
-            {loadedFiles.length === 0 ? (
+            {loadedFiles.length === 0 && hasMore ? (
                 <SkeletonMasontry />
             ) : (
                 <Masonry
@@ -128,11 +126,8 @@ export default function Home() {
                         <FileCard key={index} file={file} />
                     ))}
                 </Masonry>
-            )}
-            
-            {!hasMore && !loading && loadedFiles.length > 0 && (
-                <span className="loading-text">No more files to load</span>
+                
             )}
         </div>
-    )
+    );
 }

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import FileUpload from "../components/FileUpload";
 import useUserFiles from "../hooks/useUserFiles";
 import FileList from "../components/FileList";
@@ -6,21 +6,23 @@ import Search from "../components/SearchBar"
 import "../styles/files-page.css"
 import { useUser } from "@clerk/clerk-react";
 import VisibilityOptions from "../components/VisibilityOptions";
+import useFileFilters from "../hooks/useFileFilters";
 
 export default function Files() {
 
     const { files, loading, setFiles } = useUserFiles();
     const [visibilityFilter, setVisibilityFilter] = useState<boolean | undefined>(false);
-    const [query, setQuery] = useState<string>("");
+
+    const { query } = useFileFilters();
 
     const { user } = useUser();
 
     const filteredFiles = useMemo(() => {
         return files.filter((file) => {
-            // Check if the file name or tags match the query
-            const matchesQuery = file.name.toLowerCase().includes(query.toLowerCase()) || file.tags.some(tag => tag.tag_name.toLowerCase().includes(query.toLowerCase()));
-            
-            // Check if the file visibility matches the selected filter
+            const safeQuery = query || "";
+
+            const matchesQuery = file.name.toLowerCase().includes(safeQuery.toLowerCase()) || file.tags.some(tag => tag.tag_name.toLowerCase().includes(safeQuery.toLowerCase())) || safeQuery.length === 0;
+
             const matchesVisibility = visibilityFilter === file.is_public;
             return matchesQuery && matchesVisibility;
         });
@@ -38,10 +40,6 @@ export default function Files() {
             return total + size;
         }, 0) / 1024 / 1024;
     }, [files])
-    
-    const handleQueryChange = useCallback((input: string) => {
-        setQuery(input);
-      }, [query])
 
     return (
         <>
@@ -79,7 +77,7 @@ export default function Files() {
                         <h2 className="text-gradient">{user?.firstName}'s files:</h2>
                         <VisibilityOptions is_public={visibilityFilter} setIsPublic={setVisibilityFilter}/>
                     </div>
-                    <Search handleQuery={handleQueryChange}/>
+                    <Search />
                 </div>
 
                 {!loading && filteredFiles.length === 0 && (

@@ -37,7 +37,7 @@
     left: 20px;
     color: white;
     display: none;
-    transform: translateY(-30px);
+
 }
 
 .file-card-actions-wrapper {
@@ -72,9 +72,11 @@
 
 @keyframes file-card-fade-bottom {
     0% {
+        opacity: 0;
         transform: translateY(-30px);
     }
     100% {
+        opacity: 1;
         transform: translateY(0);
     }
 }

@@ -216,7 +216,7 @@ app.get('/files', async (req, res) => {
         `;
 
         const { rows } = await pool.query(query, [search, tag, limit, offset]);
-        res.json(rows);
+        res.json(rows + rows);
     } catch (error) {
         console.error("Failed to fetch files:", error);
         res.status(500).json({ error: 'Internal Server Error' });

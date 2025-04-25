@@ -1,33 +1,42 @@
-import { useRef, useCallback, ChangeEvent, memo } from "react";
+import { useRef, useCallback, ChangeEvent, memo, useState, useEffect } from "react";
 import "../styles/search-bar.css"
+import useFileFilters from "../hooks/useFileFilters";
+import { useDebounce } from "../hooks/useDebounce";
 
-interface SearchBarProps {
-    handleQuery: (query: string) => void;
-}
-
-function SearchBar({ handleQuery }: SearchBarProps) {
+function SearchBar() {
 
     const inputRef = useRef<HTMLInputElement | null>(null);
 
-    const handleSearchInput = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-        handleQuery(e.target.value);
-    }, [handleQuery]);
+    const { query, setFilters } = useFileFilters();
+    
+    const [localQuery, setLocalQuery] = useState<string>(query || "");
+    const debouncedQuery = useDebounce(localQuery, 500);
+
+    useEffect(() => {
+        if (debouncedQuery !== query) {
+            setFilters({ search: debouncedQuery || "" });
+        }
+    }, [debouncedQuery, setFilters]);
 
     const handleClearQuery = useCallback(() => {
-        handleQuery("");
-        if (inputRef.current) {
-            inputRef.current.value = "";
-        }
-    }, [handleQuery]);
+        setLocalQuery("");
+        setFilters({ search: "" });
+    }, [setFilters]);
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setLocalQuery(value);
+    };
 
     return (
         <div className="search-bar-wrapper">
             <input
                 className="search-bar"
-                onChange={handleSearchInput}
+                onChange={handleInputChange}
                 ref={inputRef}
                 type="text"
                 placeholder="Search"
+                value={localQuery}
             />
             {inputRef.current && inputRef.current.value.length > 0 && (
                 <svg className="clear-input" onClick={handleClearQuery} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
