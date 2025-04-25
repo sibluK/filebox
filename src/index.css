@@ -27,11 +27,6 @@
   --button-gradient: linear-gradient(90deg, rgba(0,61,163,1) 0%, rgba(2,130,233,1) 100%);
 
 
-  --bg-primary: white;
-  --bg-secondary: rgb(246, 246, 246);
-  --bg-secondary: white;
-  --text-color: black;
-
 }
 
 body {
@@ -42,6 +37,9 @@ body {
   --bg-secondary: rgb(246, 246, 246);
   --bg-secondary: white;
   --text-color: black;
+
+  --skeleton-pulse1: #e0e0e0;
+  --skeleton-pulse2: #f0f0f0;
 }
 
 body.dark {
@@ -49,6 +47,9 @@ body.dark {
   --bg-secondary: rgb(48, 48, 48);
   --text-color: white;
   color: var(--text-color);
+
+  --skeleton-pulse1: rgb(48, 48, 48);
+  --skeleton-pulse2: rgb(34, 34, 34);
 }
 
 * {

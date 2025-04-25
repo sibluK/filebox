@@ -16,7 +16,7 @@ export default function SkeletonMasontry() {
             columnClassName="masonry-grid-column"
         >
             {Array.from({ length: 6}).map((_, index) => (
-                <div key={index} className="skeleton-image"></div>
+                <div key={index} className="skeleton-masonry-image"></div>
             ))}
         </Masonry>
 

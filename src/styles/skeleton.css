@@ -14,22 +14,27 @@
     min-width: 50px;
 }
 
-.skeleton-image {
-    background-color: #e0e0e0;
+.skeleton-masonry-image, .skeleton-image {
+    background-color: var(--skeleton-pulse1);
     height: 400px;
     animation: pulse 1.5s infinite;
     margin-bottom: 10px;
     border-radius: 5px;
 }
 
+.skeleton-image {
+    height: 500px;
+    width: 400px;
+}
+
 @keyframes pulse {
     0% {
-        background-color: #e0e0e0;
+        background-color: var(--skeleton-pulse1);
     }
     50% {
-        background-color: #f0f0f0;
+        background-color: var(--skeleton-pulse2);
     }
     100% {
-        background-color: #e0e0e0;
+        background-color: var(--skeleton-pulse1);
     }
 }

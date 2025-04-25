@@ -61,6 +61,7 @@ export default function File({ file, setFiles, openEditModal }: FileProps) {
                         alt={file_name}
                         data-url={file.url}
                         data-type={file.type}
+                        loading="eager"
                     />
                 )}
                 {isVideo && (

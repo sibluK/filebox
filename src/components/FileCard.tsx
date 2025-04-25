@@ -32,6 +32,7 @@ function FileCard({ file }: FileCardProps) {
                         data-url={file.url}
                         data-type={file.type}
                         onClick={handleFileClick}
+                        loading="eager"
                     />
                 )}
                 {isVideo && (
