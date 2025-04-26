@@ -10,6 +10,7 @@ import FileCard from "../components/FileCard";
 import SkeletonMasontry from "../components/skeletons/SkeletonMasonry";
 import { useEffect } from "react";
 import SkeletonImage from "../components/skeletons/SkeletonImage";
+import ListEndMarker from "../components/ListEndMarker";
 
 export default function FilePage() {
 
@@ -93,18 +94,21 @@ export default function FilePage() {
                         {relatedLoading && <SkeletonMasontry />}
                         {relatedFiles && !relatedLoading && relatedFiles.length === 0 && <div className="loading-text">No related files found</div>}
                         {relatedFiles && !relatedLoading && relatedFiles.length > 0 && (
-                            <Masonry
-                                breakpointCols={breakpointColumnsObj}
-                                className="masonry-grid"
-                                columnClassName="masonry-grid-column"
-                            >
-                                {relatedFiles.map((file, index) => (
-                                    <div onClick={scrollToTop}>
-                                        <FileCard key={index} file={file} />
-                                    </div>
-                                    
-                                ))}
-                            </Masonry>
+                            <>
+                                <Masonry
+                                    breakpointCols={breakpointColumnsObj}
+                                    className="masonry-grid"
+                                    columnClassName="masonry-grid-column"
+                                >
+                                    {relatedFiles.map((file, index) => (
+                                        <div onClick={scrollToTop}>
+                                            <FileCard key={index} file={file} />
+                                        </div>
+                                        
+                                    ))}
+                                </Masonry>
+                                <ListEndMarker />
+                            </>
                         )}
                     </div>
                 </div>

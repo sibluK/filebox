@@ -10,6 +10,7 @@ import "../styles/masonry.css";
 import SkeletonTags from "../components/skeletons/SkeletonTags";
 import SkeletonMasontry from "../components/skeletons/SkeletonMasonry";
 import useFileFilters from "../hooks/useFileFilters";
+import ListEndMarker from "../components/ListEndMarker";
 
 export default function Home() {
     const { query, tag, setFilters } = useFileFilters();
@@ -117,15 +118,18 @@ export default function Home() {
             {loadedFiles.length === 0 && hasMore ? (
                 <SkeletonMasontry />
             ) : (
-                <Masonry
-                    breakpointCols={breakpointColumnsObj}
-                    className="masonry-grid"
-                    columnClassName="masonry-grid-column"
-                >
-                    {loadedFiles.map((file, index) => (
-                        <FileCard key={index} file={file} />
-                    ))}
-                </Masonry>
+                <>
+                    <Masonry
+                        breakpointCols={breakpointColumnsObj}
+                        className="masonry-grid"
+                        columnClassName="masonry-grid-column"
+                    >
+                        {loadedFiles.map((file, index) => (
+                            <FileCard key={index} file={file} />
+                        ))}
+                    </Masonry>
+                    <ListEndMarker />
+                </>
                 
             )}
         </div>

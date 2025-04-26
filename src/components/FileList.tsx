@@ -1,11 +1,11 @@
 import { FilesProps } from "../interfaces/interfaces";
 import File from "../components/File"
 import "../styles/file-list.css"
-import FileLoading from "./FileLoading";
 import { useState } from "react";
 import { UserFile } from "../types/types";
 import EditFileModal from "./modals/EditFileModal";
 import SkeletonMasontry from "./skeletons/SkeletonMasonry";
+import ListEndMarker from "./ListEndMarker";
 
 export default function FileList({ files, loading, setFiles }: FilesProps) {
 
@@ -24,16 +24,19 @@ export default function FileList({ files, loading, setFiles }: FilesProps) {
     return (
         <>
             {!loading ? (
-                <div className="file-list-wrapper">
-                    {reversedFiles.map((file, index) => (
-                        <File 
-                            openEditModal={() => openEditModal(file)} 
-                            key={index} 
-                            file={file} 
-                            setFiles={setFiles}
-                        />
-                    ))}
-                </div>
+                <>
+                    <div className="file-list-wrapper">
+                        {reversedFiles.map((file, index) => (
+                            <File 
+                                openEditModal={() => openEditModal(file)} 
+                                key={index} 
+                                file={file} 
+                                setFiles={setFiles}
+                            />
+                        ))}
+                    </div>
+                    <ListEndMarker />
+                </>
             ) : (
                 <SkeletonMasontry />
             )}
