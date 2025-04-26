@@ -41,14 +41,18 @@ export default function FilePage() {
                         {fileLoading ? (
                             <SkeletonImage />
                         ) : (
-                            <img 
-                                className="file-info-image lightbox-trigger"
-                                src={file?.url}
-                                alt={file?.name}
-                                data-url={file.url}
-                                data-type={file.type}
-                                loading="eager"
-                            />
+                            file.type === 'video/mp4' ? (
+                                <video typeof="video/mp4" controls className="file-info-image" src={file.url}></video>
+                                ) : (
+                                <img 
+                                    className="file-info-image lightbox-trigger"
+                                    src={file?.url}
+                                    alt={file?.name}
+                                    data-url={file.url}
+                                    data-type={file.type}
+                                    loading="eager"
+                                />
+                            )
                         )}
                         
                         <div className="file-info-details">

@@ -1,5 +1,5 @@
 import SearchBar from "../components/SearchBar";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import usePopularTags from "../hooks/usePopularTags";
 import "../styles/home-page.css"
 import useFiles from "../hooks/useFiles";

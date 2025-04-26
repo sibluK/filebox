@@ -125,7 +125,11 @@ function EditFileModal({ isOpen, file, handleClose, setFiles }: EditFileModalPro
     return (
         <div ref={editModalRef} className="modal edit-file-modal">
             <div className="modal-body">
-                <img className="edit-file-image" src={file.url} />
+                {file.type === 'video/mp4' ? (
+                    <video typeof="video/mp4" controls className="edit-file-image" src={file.url}></video>
+                ) : (
+                    <img className="edit-file-image" src={file.url} />
+                )}
                 <div className="edit-file-inputs">
                     <div className="edit-file-name-wrapper">
                         <label htmlFor="name">Name</label>
