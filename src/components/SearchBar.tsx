@@ -14,7 +14,7 @@ function SearchBar() {
 
     useEffect(() => {
         if (debouncedQuery !== query) {
-            setFilters({ search: debouncedQuery || "" });
+            setFilters({ search: debouncedQuery.toLowerCase() || "" });
         }
     }, [debouncedQuery, setFilters]);
 

@@ -29,13 +29,14 @@
 
 .detail-title {
     font-size: 0.8em;
-    color: gray;
+    color: var(--accent-color);
     margin-bottom: 5px;
+    font-weight: 600;
 }
 
 .detail-value {
-    font-size: 1.1em;
-    color: var(--accent-color);
+    font-size: 0.9em;
+    opacity: 0.8;
 }
 
 .file-info-actions {
@@ -50,4 +51,31 @@
 
 .related-files-wrapper h2 {
     margin-bottom: 10px;
+}
+
+@media screen and (max-width: 600px) {
+
+    .file-page {
+        min-width: 100%;
+        margin-top: 0px;
+        gap: 20px;
+    }
+
+    .file-info-wrapper {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .file-info-image {
+        max-width: 100%;
+    }
+
+    .file-info-details {
+        width: 95%;
+    }
+
+    .related-files-wrapper h2 {
+        margin-bottom: 5px;
+        
+    }
 }

@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import useSingleFile from "../hooks/useSingleFile";
 import Download from "../components/buttons/Download";
 import "../styles/file-page.css"
@@ -7,7 +7,6 @@ import UserInfo from "../components/UserInfo";
 import Masonry from "react-masonry-css";
 import "../styles/masonry.css";
 import FileCard from "../components/FileCard";
-import FileLoading from "../components/FileLoading";
 import SkeletonMasontry from "../components/skeletons/SkeletonMasonry";
 import { useEffect } from "react";
 import SkeletonImage from "../components/skeletons/SkeletonImage";
@@ -15,10 +14,9 @@ import SkeletonImage from "../components/skeletons/SkeletonImage";
 export default function FilePage() {
 
     const { id: file_id } = useParams();
-
     const numberId = file_id ? parseInt(file_id) : undefined;
-
     const { file, fileLoading, relatedFiles, relatedLoading } = useSingleFile({ file_id: numberId });
+    const navigate = useNavigate();
 
     const breakpointColumnsObj = {
         default: 3,
@@ -72,7 +70,7 @@ export default function FilePage() {
                                 <div className="detail-title">Tags</div>
                                 <div className="tags-wrapper">
                                     {file?.tags.map((tag) => (
-                                        <span key={tag.id} className="popular-tag tag">{tag.tag_name}</span>
+                                        <span key={tag.id} className="popular-tag tag" onClick={() => navigate(`/?tag=${tag.tag_name.toLowerCase()}`)}>{tag.tag_name}</span>
                                     ))}
                                 </div>
                                 

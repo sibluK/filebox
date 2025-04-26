@@ -70,8 +70,8 @@ export default function Home() {
 
 
     const handleTagClick = (selectedTag: string) => {
-        if (selectedTag !== tag) {
-            setFilters({ tag: selectedTag });
+        if (selectedTag.toLowerCase() !== tag) {
+            setFilters({ tag: selectedTag.toLowerCase() });
             setOffset(0);
             setLoadedFiles([]);
         } else {
@@ -101,7 +101,7 @@ export default function Home() {
                             <span
                                 onClick={() => handleTagClick(t.tag_name)}
                                 key={index}
-                                className={`popular-tag tag ${tag === t.tag_name ? "selected-tag" : ""}`}
+                                className={`popular-tag tag ${tag === t.tag_name.toLowerCase() ? "selected-tag" : ""}`}
                             >
                                 {t.tag_name}
                             </span>
