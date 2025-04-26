@@ -10,7 +10,7 @@
     overflow-y: hidden;
 }
 
-.nav-link {
+.nav-collapse {
     display: flex;
 }
 
@@ -58,7 +58,6 @@
 }
 
 .upload-file-nav-button:hover {
-    
     color: white;
     background: transparent;
 }
@@ -79,6 +78,37 @@
 
 .theme-down {
     animation: move-down 0.2s ease forwards;
+}
+
+.nav-burger-wrapper {
+    display: none;
+    flex-direction: column;
+    min-width: 25px;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.burger-line {
+    height: 2px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.mobile-navbar {
+    position: fixed;
+    top: 80px;
+    right: 10px;
+    background-color: var(--accent-color);
+    z-index: 3;
+    padding: 20px;
+    gap: 30px;
+    display: flex;
+    flex-direction: column;
+    border-top: none;
+    box-shadow: var(--box-shadow);
+    border-radius: 5px;
+    font-size: 1.1em;
+    text-align: center;
 }
 
 @keyframes move-up {
@@ -112,7 +142,23 @@
 
 @media screen and (max-width: 500px) {
     .navbar { 
-        padding: 20px 2%;
-        gap: 10px;
+        padding: 20px 5%;
+        gap: 25px;
+    }
+
+    .nav-collapse {
+        display: none;
+    }
+
+    .nav-burger-wrapper {
+        display: flex;
+    }
+
+    .mobile-navbar .nav-link a {
+        color: white
+    }
+
+    .toggle-theme-button svg {
+        animation: none;
     }
 }

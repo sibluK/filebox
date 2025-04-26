@@ -2,8 +2,13 @@ import { Link } from "react-router";
 import "../styles/navbar.css";
 import { SignedIn, UserButton, SignedOut } from "@clerk/clerk-react";
 import ThemeChanger from "./ThemeChanger";
+import { useState } from "react";
+import MobileNavbar from "./MobileNavbar";
 
 export default function Navbar() {
+
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+
   return (
     <nav className="navbar">
       <div className="nav-link logo-wrapper">
@@ -28,21 +33,30 @@ export default function Navbar() {
           </button>
         </Link>
       </div>
-      <div className="nav-link">
+      <div className="nav-link nav-collapse">
         <Link to={"/"}>Home</Link>
       </div>
       <SignedOut>
-        <div className="nav-link">
+        <div className="nav-link nav-collapse">
             <Link to={"/sign-up"}>Sign Up</Link>
         </div>
       </SignedOut>
       <SignedIn>
-        <div className="nav-link">
+        <div className="nav-link nav-collapse">
           <Link to={"/files"}>Files</Link>
         </div>
         <UserButton />
       </SignedIn>
-      <ThemeChanger />
+      <div className="nav-collapse">
+        <ThemeChanger />
+      </div>
+      
+      <div className="nav-burger-wrapper" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <span className="burger-line"></span>
+        <span className="burger-line"></span>
+        <span className="burger-line"></span>
+      </div>
+      {isMenuOpen && <MobileNavbar isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen}/>}
     </nav>
   );
 }

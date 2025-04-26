@@ -1,38 +1,18 @@
 import { useState } from "react";
+import { useTheme } from "../context/ThemeProvider";
 
 export default function ThemeChanger() {
 
-    const [theme, setTheme] = useState<string>(() => {
-        return localStorage.getItem("theme") || "light";
-    });
+    const { theme, toggleTheme } = useTheme();
 
     const [animation, setAnimation] = useState<string>("");
 
-        const body = document.body;
-        if (theme === "light") {
-            body.classList.remove("dark");
-            
-        } else {
-            body.classList.add("dark");
-        }
-
-
     function handleThemeChange() {
-        if(theme === 'light') {
-            setAnimation("theme-up");
-            setTimeout(() => {
-                localStorage.setItem('theme', 'dark');
-                setTheme('dark');
-                setAnimation("theme-down")
-            }, 200)
-        } else {
-            setAnimation("theme-up");
-            setTimeout(() => {
-                localStorage.setItem("theme", "light");
-                setTheme("light");
-                setAnimation("theme-down");
-            }, 200);
-        }
+        setAnimation("theme-up");
+        setTimeout(() => {
+            toggleTheme();
+            setAnimation("theme-down");
+        }, 200);
     }
 
     return (
