@@ -1,6 +1,5 @@
 .file-page {
     margin-top: 20px;
-    min-width: 968px;
     display: flex;
     flex-direction: column;
     gap: 40px;
@@ -9,6 +8,7 @@
 .file-info-wrapper {
     display: flex;
     align-items: center;
+    justify-content: space-evenly;
     gap: 40px;
 }
 
@@ -45,6 +45,10 @@
 .file-info-actions div {
     display: flex;
     gap: 10px;
+}
+
+.related-files-wrapper {
+    min-width: 100%;
 }
 
 .related-files-wrapper h2 {

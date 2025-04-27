@@ -14,6 +14,7 @@ import ListEndMarker from "../components/ListEndMarker";
 import useFeaturedFile from "../hooks/useFeaturedFiles";
 import SkeletonImage from "../components/skeletons/SkeletonImage";
 import { useNavigate } from "react-router";
+import FileLoading from "../components/FileLoading";
 
 export default function Home() {
     
@@ -126,7 +127,7 @@ export default function Home() {
                         />
                     </div>
                 ) : (
-                    <SkeletonImage />
+                    <FileLoading/>
                 )}
             </div>
 
