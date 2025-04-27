@@ -8,7 +8,6 @@
 
 .file-info-wrapper {
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 40px;
 }
@@ -23,7 +22,6 @@
 .file-info-details {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
     gap: 20px;
 }
 

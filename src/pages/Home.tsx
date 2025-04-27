@@ -11,17 +11,24 @@ import SkeletonTags from "../components/skeletons/SkeletonTags";
 import SkeletonMasontry from "../components/skeletons/SkeletonMasonry";
 import useFileFilters from "../hooks/useFileFilters";
 import ListEndMarker from "../components/ListEndMarker";
+import useFeaturedFile from "../hooks/useFeaturedFiles";
+import SkeletonImage from "../components/skeletons/SkeletonImage";
+import { useNavigate } from "react-router";
 
 export default function Home() {
-    const { query, tag, setFilters } = useFileFilters();
+    
     const [offset, setOffset] = useState<number>(0);
     const [loadedFiles, setLoadedFiles] = useState<UserFile[]>([]);
 
     const limit = 10;
+    const timeoutRef = useRef(0);
+    const navigate = useNavigate();
 
+    const { query, tag, setFilters } = useFileFilters();
     const { tags } = usePopularTags();
     const { files, loading, hasMore } = useFiles({ query, tag, limit, offset });
-
+    const { featuredFiles, loading: featuredFilesLoading } = useFeaturedFile();
+    
     const handleScroll = useCallback(() => {
         const scrollPosition = window.innerHeight + document.documentElement.scrollTop;
         const documentHeight = document.documentElement.offsetHeight;
@@ -34,8 +41,6 @@ export default function Home() {
             }
         }
     }, [loading, hasMore, limit]);
-
-    const timeoutRef = useRef(0);
 
     const debouncedScroll = useCallback(() => {
         if (timeoutRef.current) {
@@ -69,7 +74,6 @@ export default function Home() {
         }
     }, [files]);
 
-
     const handleTagClick = (selectedTag: string) => {
         if (selectedTag.toLowerCase() !== tag) {
             setFilters({ tag: selectedTag.toLowerCase() });
@@ -90,6 +94,42 @@ export default function Home() {
 
     return (
         <div className="home-page">
+
+            <div className="featured-file-wrapper">
+                <div className="featured-section-info">
+                     <h1 className="text-gradient">Featured</h1>
+                     <p>Discover a curated selection of standout images handpicked for their creativity, impact, and style.
+                         These featured pieces showcase some of the best and most inspiring moments captured by our community.</p>
+                    <button className="gradient-button">Explore</button>
+                </div>
+                {!featuredFilesLoading && featuredFiles ? (
+                    <div className="featured-section-image-accordion">
+                        <img 
+                            src={featuredFiles[0].url} 
+                            alt={featuredFiles[0].name}
+                            className="featured-section-image"
+                            onClick={() => navigate(`/featured`)}
+                         />
+
+                        <img 
+                            src={featuredFiles[1].url} 
+                            alt={featuredFiles[1].name}
+                            className="featured-section-image"
+                            onClick={() => navigate(`/featured`)}
+                        />
+
+                        <img 
+                            src={featuredFiles[2].url} 
+                            alt={featuredFiles[2].name}
+                            className="featured-section-image"
+                            onClick={() => navigate(`/featured`)}
+                        />
+                    </div>
+                ) : (
+                    <SkeletonImage />
+                )}
+            </div>
+
             <div className="home-page-header-container">
                 <div className="header">
                     <SearchBar />
