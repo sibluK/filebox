@@ -10,6 +10,7 @@ import Lightbox from "./components/Lightbox"
 import "./styles/lightbox.css"
 import FilePage from "./pages/FilePage"
 import { ThemeProvider } from "./context/ThemeProvider"
+import ScrollTopButton from "./components/ScrollTopButton"
 
 function App() {
 
@@ -38,6 +39,7 @@ function App() {
             transition={Bounce}
           />
             <Lightbox />
+            <ScrollTopButton />
           </div>
         </ThemeProvider>
     </>

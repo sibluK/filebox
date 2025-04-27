@@ -223,6 +223,29 @@ app.get('/files', async (req, res) => {
     }
 });
 
+app.get('/files/featured', async (req, res) => {
+    try {
+        const featured_file_ids = await pool.query('SELECT file_id FROM featured_files ORDER BY id DESC');
+
+        if(featured_file_ids.rows.length === 0) {
+            return res.status(404).json({ error: "Featured files not found"});
+        }
+
+        const featured_files = []
+        for (const feat of featured_file_ids.rows) {
+            const featured_file_response = await pool.query('SELECT * FROM user_files WHERE id = $1', [feat.file_id]);
+
+            if (featured_file_response.rows[0]) {
+                featured_files.push(featured_file_response.rows[0]);
+            }
+        }
+
+        res.status(200).json(featured_files);
+    } catch(error) {
+        res.status(500).json({ error: 'Internal Server Error'})
+    }
+});
+
 app.get('/files/:id', async (req, res) => {
     const file_id = req.params.id;
 
@@ -254,7 +277,7 @@ app.get('/files/:id', async (req, res) => {
         res.json(file);
     } catch (error) {
         console.error("Failed to fetch file:", error);
-        req.status(500).json({ error: 'Internal Server Error' })
+        res.status(500).json({ error: 'Internal Server Error' })
     }
 
 });

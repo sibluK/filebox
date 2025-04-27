@@ -15,7 +15,6 @@ function FileCard({ file }: FileCardProps) {
 
     const file_extension = file.type.split('/').pop()?.toLowerCase();
 
-    const isImage = ['jpg', 'jpeg', 'png'].includes(file_extension || '');
     const isVideo = ['mp4'].includes(file_extension || '');
 
     function handleFileClick() {
@@ -24,7 +23,7 @@ function FileCard({ file }: FileCardProps) {
 
     return (
         <div className="file-card-wrapper masonry-item">
-                {isImage && (
+                {file.type !== 'video/mp4' ? (
                     <img 
                         className="file-card-image" 
                         src={file.url} 
@@ -34,9 +33,8 @@ function FileCard({ file }: FileCardProps) {
                         onClick={handleFileClick}
                         loading="eager"
                     />
-                )}
-                {isVideo && (
-                        <video 
+                ) : (
+                    <video 
                             className="file-card-image" 
                             data-url={file.url}
                             data-type={file.type}

@@ -23,8 +23,8 @@
 }
 
 .files-section {
-    min-width: 968px;
     position: relative;
+    width: 100%;
 }
 
 .files-section .search-bar-wrapper {
