@@ -11,6 +11,7 @@ import SkeletonMasontry from "../components/skeletons/SkeletonMasonry";
 import { useEffect } from "react";
 import SkeletonImage from "../components/skeletons/SkeletonImage";
 import ListEndMarker from "../components/ListEndMarker";
+import FileLoading from "../components/FileLoading";
 
 export default function FilePage() {
 
@@ -39,7 +40,7 @@ export default function FilePage() {
                 {file && (
                     <div className="file-info-wrapper">
                         {fileLoading ? (
-                            <SkeletonImage />
+                            <FileLoading />
                         ) : (
                             file.type === 'video/mp4' ? (
                                 <video typeof="video/mp4" controls className="file-info-image" src={file.url}></video>
