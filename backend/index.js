@@ -2,59 +2,23 @@ import express from 'express';
 import { generateUploadURL, deleteFileFromS3 } from './s3.js';
 import cors from 'cors'
 import pkg from 'pg';
-import jwt from 'jsonwebtoken';
-import jwksRsa from 'jwks-rsa';
-import { Clerk, users } from "@clerk/clerk-sdk-node";
-
-// App config
-const jwksClient = jwksRsa({
-    jwksUri: process.env.CLERK_JWKS_URI,
-    cache: true,
-    rateLimit: true
-});
-
-Clerk({ secretKey: process.env.CLERK_SECRET_KEY })
-
-export async function verifyJwt(req, res, next) {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        console.error("Missing or invalid Authorization header");
-        return res.status(401).send('Unauthorized: Missing or invalid token');
-    }
-
-    const token = authHeader.split(' ')[1];
-
-    try {
-        const decodedHeader = jwt.decode(token, { complete: true });
-
-        const getKey = (header) => {
-            return new Promise((resolve, reject) => {
-                jwksClient.getSigningKey(header.kid, (err, key) => {
-                    if (err) {
-                        console.error("Error fetching signing key:", err);
-                        return reject(err);
-                    }
-                    const signingKey = key.getPublicKey();
-                    resolve(signingKey);
-                });
-            });
-        };
-
-        const signingKey = await getKey(decodedHeader.header);
-        const decoded = jwt.verify(token, signingKey, { algorithms: ['RS256'] });
-
-        req.user = decoded;
-        next();
-
-    } catch (error) {
-        console.error('JWT verification error:', error);
-        return res.status(401).send('Unauthorized: Invalid token');
-    }
-
-}
+import { clerkMiddleware, requireAuth, createClerkClient } from '@clerk/express'
 
 const app = express();
+
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.path}`, {
+        headers: req.headers,
+        body: req.body
+    });
+    next();
+});
+
+const clerkClient = createClerkClient({
+    publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
+    apiUrl: 'https://api.clerk.dev',
+    secretKey: process.env.CLERK_SECRET_KEY
+});
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -64,12 +28,19 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(clerkMiddleware());
+
+const withAuth = requireAuth({
+    onError: (err, req, res) => {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
 
 const { Pool } = pkg;
 const pool = new Pool({ connectionString: process.env.NEON_POSTGRESQL_DB_STRING });
 
 // Endpoints
-app.get('/generate-url', verifyJwt, async (req, res) => {
+app.get('/generate-url', withAuth, async (req, res) => {
     try {
         const url = await generateUploadURL();
         res.send({ url });
@@ -83,7 +54,7 @@ app.get("/users/:id/info", async (req, res) => {
     const user_id = req.params.id;
 
     try {
-        const user = await users.getUser(user_id);
+        const user = await clerkClient.users.getUser(user_id);
 
         const publicInfo = {
             name: `${user.firstName} ${user.lastName}`,
@@ -98,11 +69,21 @@ app.get("/users/:id/info", async (req, res) => {
 });
 
     // For getting user individual files  
-app.get('/users/:id/files', verifyJwt, async (req, res) => {
+app.get('/users/:id/files', withAuth, async (req, res) => {
 
     const user_id = req.params.id;
 
     try {
+        const auth_user_id = req.auth.userId;
+
+        if (!auth_user_id) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        if (user_id !== auth_user_id) {
+            return res.status(403).json({ error: 'You are not authorized to access this user\'s files' });
+        }
+
         const { rows } = await pool.query('SELECT * FROM user_files WHERE user_id = $1', [user_id]);
         res.json(rows);
     } catch (error) {
@@ -112,7 +93,7 @@ app.get('/users/:id/files', verifyJwt, async (req, res) => {
 });
 
     // For uploading information to the Neon postgresql database
-app.post('/users/files', verifyJwt, async (req, res) => {
+app.post('/users/files', withAuth, async (req, res) => {
 
     const { user_id, file_url, s3_key, name, type, size, added_at, isPublic } = req.body;
 
@@ -126,7 +107,7 @@ app.post('/users/files', verifyJwt, async (req, res) => {
 });
 
     // For updating the name or visibility status
-app.put('/users/files/:id', verifyJwt, async (req, res) => {
+app.put('/users/files/:id', withAuth, async (req, res) => {
     const file_id = req.params.id;
     const { name, is_public } = req.body;
 
@@ -170,7 +151,7 @@ app.post('/files/downloads/:id', async (req, res) => {
 });
     // For deleting user files from the database
     // and deleting the file from the S3 bucket
-app.delete('/users/files/:id', verifyJwt, async (req, res) => {
+app.delete('/users/files/:id', withAuth, async (req, res) => {
     
     const file_id = req.params.id;
     const s3_key = req.body.s3_key;
@@ -283,7 +264,7 @@ app.get('/files/:id', async (req, res) => {
 });
 
     // For getting file tags
-app.get('/files/:id/tags', verifyJwt, async (req, res) => {
+app.get('/files/:id/tags', withAuth, async (req, res) => {
     const file_id = req.params.id;
 
     if(file_id === undefined) {
@@ -300,7 +281,7 @@ app.get('/files/:id/tags', verifyJwt, async (req, res) => {
 });
 
     // For settings file tags
-app.post('/files/:id/tags', verifyJwt, async (req, res) => {
+app.post('/files/:id/tags', withAuth, async (req, res) => {
     const file_id = req.params.id;
     const { tags } = req.body;
 
@@ -322,7 +303,7 @@ app.post('/files/:id/tags', verifyJwt, async (req, res) => {
 });
 
     // For deleting file tags
-app.delete('/files/:id/tags', verifyJwt, async (req, res) => {
+app.delete('/files/:id/tags', withAuth, async (req, res) => {
     const file_id = req.params.id;
     const { tags } = req.body;
 
@@ -380,6 +361,11 @@ app.get('/files/:id/related', async (req, res) => {
         console.log("Failed to fetch related files");
         res.status(500).json({ error: 'Interal Server Error'})
     }
+});
+
+app.use((req, res) => {
+    console.log('404 hit for path:', req.path);
+    res.status(404).json({ error: 'Route not found' });
 });
 
 app.listen(3000, () => {
