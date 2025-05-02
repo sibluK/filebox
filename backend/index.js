@@ -51,11 +51,13 @@ const pool = new Pool({ connectionString: process.env.NEON_POSTGRESQL_DB_STRING 
 const upload = multer();
 
 // Endpoints
-app.post('/upload', upload.single('file'), async (req, res) => {
+app.post('/upload', withAuth, upload.single('file'), async (req, res) => {
     try {
         const file = req.file;
         const user_id = req.auth.userId;
         const isPublic = req.body.isPublic === 'true';
+
+        console.log(user_id)
 
         const uploadURL = await generateUploadURL();
 
@@ -125,23 +127,21 @@ app.get('/users/:id/files', withAuth, async (req, res) => {
     }
 });
 
-// For uploading information to the Neon postgresql database
-app.post('/users/files', withAuth, async (req, res) => {
-
-    const { user_id, file_url, s3_key, name, type, size, added_at, isPublic } = req.body;
-
-    try {
-        const created_file = await pool.query('INSERT INTO user_files (user_id, url, type, size, added_at, s3_key, name, is_public) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *', [user_id, file_url, type, size, added_at, s3_key, name, isPublic]);
-        res.status(201).json(created_file.rows[0]);
-    } catch (error) {
-        console.log("Failed to insert user file");
-        res.status(500).json({ error: 'Interal Server Error'})
-    }
-});
-
 // For updating the name or visibility status
 app.put('/users/files/:id', withAuth, async (req, res) => {
     const file_id = req.params.id;
+    const auth_user_id = req.auth.userId;
+
+    const file_response = await pool.query('SELECT * FROM user_files WHERE id = $1', [file_id]);
+
+    if(file_response.rows.length === 0) {
+        return res.status(404).json({ error: 'File not found' });
+    }
+
+    if (file_response.rows[0].user_id !== auth_user_id) {
+        return res.status(403).json({ error: 'You are not authorized to update this file' });
+    }
+
     const { name, is_public } = req.body;
 
     if (!name || typeof is_public === 'undefined') {
@@ -189,8 +189,20 @@ app.delete('/users/files/:id', withAuth, async (req, res) => {
     
     const file_id = req.params.id;
     const s3_key = req.body.s3_key;
+    const user_id = req.auth.userId;
 
     try {
+
+        const file_response = await pool.query('SELECT * FROM user_files WHERE id = $1', [file_id]);
+
+        if (file_response.rows.length === 0) {
+            return res.status(404).json({ error: 'File not found' });
+        }
+
+        if (file_response.rows[0].user_id !== user_id) {
+            return res.status(403).json({ error: 'You are not authorized to delete this file' });
+        }
+
         // Delete file objects
         await pool.query('DELETE FROM user_files WHERE id = $1', [file_id]);
         
@@ -296,7 +308,6 @@ app.get('/files/:id', async (req, res) => {
         console.error("Failed to fetch file:", error);
         res.status(500).json({ error: 'Internal Server Error' })
     }
-
 });
 
 // For getting file tags
@@ -305,6 +316,17 @@ app.get('/files/:id/tags', withAuth, async (req, res) => {
 
     if(file_id === undefined) {
         return res.status(400).json({ error: 'File ID is required' }); 
+    }
+
+    const file_response = await pool.query('SELECT * FROM user_files WHERE id = $1', [file_id]);
+    const file = file_response.rows[0];
+
+    if(file_response.rows.length === 0) {
+        return res.status(404).json({ error: 'File not found' });
+    }
+
+    if (!file.is_public) {
+        return res.status(403).json({ error: 'File is not public'});
     }
 
     try {

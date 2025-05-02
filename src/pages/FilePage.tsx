@@ -9,7 +9,6 @@ import "../styles/masonry.css";
 import FileCard from "../components/FileCard";
 import SkeletonMasontry from "../components/skeletons/SkeletonMasonry";
 import { useEffect } from "react";
-import SkeletonImage from "../components/skeletons/SkeletonImage";
 import ListEndMarker from "../components/ListEndMarker";
 import FileLoading from "../components/FileLoading";
 
