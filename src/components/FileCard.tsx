@@ -21,7 +21,7 @@ function FileCard({ file }: FileCardProps) {
     const isVideo = ['mp4'].includes(file_extension || '');
 
     function handleFileClick() {
-        navigate(`/files/${file.id}/${file.name}`)
+        navigate(`/files/${file.id}/${file.name.toLowerCase()}`)
     }
 
     return (

@@ -1,4 +1,4 @@
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
 import { memo, useRef, useState } from "react";
 import "../styles/file-upload.css"
@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import FileTagAddition from "./FileTagAddition";
 import CircularProgress from '@mui/material/CircularProgress';
 import FileVisibilitySelection from "./FileVisibilitySelection";
+import { AxiosError } from 'axios';
 
 interface FileUploadProps {
     setFiles: React.Dispatch<React.SetStateAction<UserFile[]>>;
@@ -22,7 +23,6 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const backend_url = import.meta.env.VITE_BACKEND_URL;
 
-    const { user } = useUser();
     const { getToken } = useAuth();
 
     const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
@@ -73,102 +73,71 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
 
     async function handleFileUpload(e: React.FormEvent) {
         e.preventDefault();
-        if (file) {
-            const file_size_mb = file.size / 1024 / 1024;
-
-            if(!isFileValidSize(file)) return;
-
-            try {
-                setLoading(true);
-                // Get the JWT token from Clerk
-                const token = await getToken();
-
-                // Get the url for uploading to S3
-                const response = await axios.get(`${backend_url}/generate-url`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-                const url = response.data.url;
-
-                // Send the uploaded file to S3 bucket
-                const s3response = await axios.put(url, file, {
-                    headers: {
-                        "Content-Type": file.type
-                    },
-                    timeout: 55000
-                });
-
-                if (s3response.status === 200) {
-                    // Set fields for file
-                    const user_id = user?.id || "";
-                    const file_url = url.split('?')[0];
-                    const s3_key = file_url.split('/').pop() || "";
-                    const name = file.name.split('.')[0];
-                    const type = file.type;
-                    const size = file.size;
-                    const now = new Date();
-                    const added_at = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')} ` +
-                                      `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+        if (!file) {
+            toast.error("No file selected...");
+            return;
+        }
+    
+        if (!isFileValidSize(file)) return;
+    
+        try {
+            setLoading(true);
+            const token = await getToken();
+    
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('isPublic', String(isPublic));
             
-                    // Send a request to the backend to store the file info
-                    const created_file_response = await axios.post(`${backend_url}/users/files`, {
-                        user_id,
-                        file_url,
-                        s3_key,
-                        name,
-                        type,
-                        size,
-                        added_at,
-                        isPublic,
-                    }, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
-
-                    const created_file: UserFile = created_file_response.data;
- 
-                    // If any tags are added, send them to the backend
-                    let created_tags: FileTag[] = []
-                    if(tags.length > 0) {
-                        const tags_response = await axios.post(`${backend_url}/files/${created_file.id}/tags`, {
-                            tags
-                        }, {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        });
-                        created_tags = tags_response.data;
-                    }
-
-                    const fileWithTags: UserFile = {...created_file, tags: created_tags}
-
-                    // Update the states and display success message
-                    setFiles((prevFiles) => [...prevFiles, fileWithTags]);
-                    setTags([]);
-                    setFile(null);
-                    setIsPublic(false);
-                    if (fileInputRef.current) {
-                        fileInputRef.current.value = "";
-                    }
-                    toast.success(
-                         <div className="file-upload-toast">
-                            <p>File uploaded successfully!</p>
-                            <p>{file_size_mb.toFixed(2)} MB</p>
-                        </div>
-                    );
-                    setLoading(false);
+            const response = await axios.post(`${backend_url}/upload`, formData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data'
                 }
-
-            } catch (error) {
-                toast.error("Something went wrong. Try again later...")
-                
-            } finally {
-                setLoading(false);
+            });
+    
+            if (response.status === 201) {
+                const created_file = response.data;
+    
+                let created_tags: FileTag[] = [];
+                if (tags.length > 0) {
+                    const tags_response = await axios.post(
+                        `${backend_url}/files/${created_file.id}/tags`,
+                        { tags },
+                        {
+                            headers: { Authorization: `Bearer ${token}` }
+                        }
+                    );
+                    created_tags = tags_response.data;
+                }
+    
+                // Update UI
+                setFiles(prev => [...prev, { ...created_file, tags: created_tags }]);
+                setTags([]);
+                setFile(null);
+                setIsPublic(false);
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = "";
+                }
+    
+                toast.success(
+                    <div className="file-upload-toast">
+                        <p>File uploaded successfully!</p>
+                        <p>{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                    </div>
+                );
             }
-        } else {
-            toast.error("No file selected...")
+
+        } catch (error) {
+            if(error instanceof AxiosError) {
+                if (error.response?.status === 429) {
+                    toast.error("You have reached the upload limit. Please try again after 10 minutes.");
+                    return;
+                }
+            }
+            toast.error("Upload failed. Please try again.");
+            console.error('Upload error:', error);
+        } finally {
+            setLoading(false);
         }
     }
 
