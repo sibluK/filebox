@@ -76,6 +76,8 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
         if (file) {
             const file_size_mb = file.size / 1024 / 1024;
 
+            if(!isFileValidSize(file)) return;
+
             try {
                 setLoading(true);
                 // Get the JWT token from Clerk
@@ -93,7 +95,8 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                 const s3response = await axios.put(url, file, {
                     headers: {
                         "Content-Type": file.type
-                    }
+                    },
+                    timeout: 55000
                 });
 
                 if (s3response.status === 200) {

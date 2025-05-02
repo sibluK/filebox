@@ -1,4 +1,5 @@
 import express from 'express';
+import rateLimit from 'express-rate-limit';
 import { generateUploadURL, deleteFileFromS3 } from './s3.js';
 import cors from 'cors'
 import pkg from 'pg';
@@ -6,6 +7,7 @@ import { clerkMiddleware, requireAuth, createClerkClient } from '@clerk/express'
 
 const app = express();
 
+/*
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.path}`, {
         headers: req.headers,
@@ -13,6 +15,12 @@ app.use((req, res, next) => {
     });
     next();
 });
+*/
+
+const uploadLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 5,
+})
 
 const clerkClient = createClerkClient({
     publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
@@ -40,7 +48,7 @@ const { Pool } = pkg;
 const pool = new Pool({ connectionString: process.env.NEON_POSTGRESQL_DB_STRING });
 
 // Endpoints
-app.get('/generate-url', withAuth, async (req, res) => {
+app.get('/generate-url', uploadLimiter, withAuth, async (req, res) => {
     try {
         const url = await generateUploadURL();
         res.send({ url });
