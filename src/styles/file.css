@@ -4,7 +4,6 @@
     border-radius: 5px;
     box-shadow: var(--box-shadow);
     justify-content: space-between;
-    font-size: 0.8em;
     background-color: var(--bg-secondary);
 }
 
@@ -34,6 +33,7 @@
     flex-direction: column;
     gap: 10px;
     color: var(--accent-color);
+    font-size: 0.8em;
 }
 
 .info-section {

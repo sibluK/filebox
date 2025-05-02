@@ -2,7 +2,11 @@
     position: relative;
     margin-bottom: 5px;
     cursor: pointer;
-    overflow-y: hidden !important;
+}
+
+.file-card-image-container {
+    overflow-y: hidden;
+    position: relative;
 }
 
 .file-card-wrapper:hover .file-card-image {
@@ -11,23 +15,23 @@
 
 .file-card-wrapper:hover .file-card-name {
     display: flex;
-    animation: file-card-fade-top 0.15s ease-in-out forwards;
+    animation: file-card-fade-top 0.15s ease forwards;
 }
 
 .file-card-wrapper:hover .file-card-actions-wrapper {
     display: flex;
-    animation: file-card-fade-bottom 0.15s ease-in-out forwards;
+    animation: file-card-fade-bottom 0.15s ease forwards;
 }
 
 .file-card-wrapper:hover .video-file-mark {
     display: flex;
-    animation: file-card-fade-bottom 0.15s ease-in-out forwards;
+    animation: file-card-fade-bottom 0.15s ease forwards;
 }
 
 .file-card-image {
     max-width: 100%;
     border-radius: 5px;
-    transition: filter 0.15s ease-in-out;
+    transition: filter 0.15s ease;
     position: relative;
 }
 
@@ -67,6 +71,7 @@
     100% {
         opacity: 1;
         transform: translateY(0);
+        overflow-y: visible !important;
     }
 }
 
@@ -78,6 +83,7 @@
     100% {
         opacity: 1;
         transform: translateY(0);
+        overflow-y: visible !important;
     }
 }
 

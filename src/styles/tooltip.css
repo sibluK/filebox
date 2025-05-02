@@ -1,0 +1,26 @@
+.tooltip-children {
+    position: relative;
+}
+
+.tooltip-content {
+    visibility: hidden;
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-primary);
+    color: var(--accent-color);
+    font-weight: 600;
+    padding: 6px;
+    border-radius: 5px;
+    font-size: 0.8em !important;
+    box-shadow: var(--box-shadow);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    text-wrap: nowrap;
+}
+
+.tooltip-children:hover .tooltip-content {
+    opacity: 1;
+    visibility: visible;
+}

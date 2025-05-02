@@ -59,7 +59,7 @@ export default function Files() {
                        Used
                     </span>
                     <span className="stat-value text-gradient">
-                        {numberOfMbs.toFixed(2)} MB
+                        {numberOfMbs.toFixed(2)}/100 MB
                     </span>
                 </div>
                 <div className="stat-wrapper">

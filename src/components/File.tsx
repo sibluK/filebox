@@ -7,9 +7,13 @@ import Download from "./buttons/Download";
 import CopyClipboard from "./buttons/CopyClipboard";
 import Edit from "./buttons/Edit";
 import Delete from "./buttons/Delete";
+import { useState } from "react";
+import Tooltip from "./Tooltip";
 
 export default function File({ file, setFiles, openEditModal }: FileProps) {
     
+    const [imageLoaded, setImageLoaded] = useState(false);
+
     const { getToken } = useAuth();
 
     const file_name = file.url.split('/').pop();
@@ -61,14 +65,17 @@ export default function File({ file, setFiles, openEditModal }: FileProps) {
                         alt={file_name}
                         data-url={file.url}
                         data-type={file.type}
-                        loading="eager"
+                        onLoad={() => setImageLoaded(true)}
+                        style={{ display: imageLoaded ? 'block' : 'none' }}
                     />
                 )}
-                {isVideo && (
+                {isVideo && imageLoaded && (
                     <video 
                         className="file-video lightbox-trigger" 
                         data-url={file.url}
                         data-type={file.type}
+                        onLoad={() => setImageLoaded(true)}
+                        style={{ display: imageLoaded ? 'block' : 'none' }}
                     >
                         <source src={file.url} type={file.type} />
                         Your browser does not support the video tag.
@@ -115,10 +122,18 @@ export default function File({ file, setFiles, openEditModal }: FileProps) {
                 </div>
             </div>
             <div className="file-action-buttons">
-                <Download file_name={file.name} file_id={file.id} file_url={file.url}/>
-                <CopyClipboard file_url={file.url}/>
-                <Edit handleClick={openEditModal}/>
-                <Delete handleDeletion={handleFileDeletion}/>
+                <Tooltip text="Download">
+                    <Download file_name={file.name} file_id={file.id} file_url={file.url}/>
+                </Tooltip>
+                <Tooltip text="Copy Link">
+                    <CopyClipboard file_url={file.url}/>
+                </Tooltip>
+                <Tooltip text="Edit File">
+                    <Edit handleClick={openEditModal}/>
+                </Tooltip>
+                <Tooltip text="Delete File">
+                    <Delete handleDeletion={handleFileDeletion}/>
+                </Tooltip>
             </div>
         </div>
     );

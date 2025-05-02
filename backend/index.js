@@ -17,7 +17,7 @@ app.use((req, res, next) => {
 const clerkClient = createClerkClient({
     publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
     apiUrl: 'https://api.clerk.dev',
-    secretKey: process.env.CLERK_SECRET_KEY
+    secretKey: process.env.CLERK_SECRET_KEY,
 });
 
 app.use(cors({
