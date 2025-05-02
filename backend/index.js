@@ -4,6 +4,8 @@ import { generateUploadURL, deleteFileFromS3 } from './s3.js';
 import cors from 'cors'
 import pkg from 'pg';
 import { clerkMiddleware, requireAuth, createClerkClient } from '@clerk/express'
+import multer from 'multer';
+import axios from 'axios';
 
 const app = express();
 
@@ -46,18 +48,41 @@ const withAuth = requireAuth({
 
 const { Pool } = pkg;
 const pool = new Pool({ connectionString: process.env.NEON_POSTGRESQL_DB_STRING });
+const upload = multer();
 
 // Endpoints
-app.get('/generate-url', uploadLimiter, withAuth, async (req, res) => {
+app.post('/upload', upload.single('file'), async (req, res) => {
     try {
-        const url = await generateUploadURL();
-        res.send({ url });
+        const file = req.file;
+        const user_id = req.auth.userId;
+        const isPublic = req.body.isPublic === 'true';
+
+        const uploadURL = await generateUploadURL();
+
+        const s3response = await axios.put(uploadURL, file.buffer, {
+            headers: {
+                'Content-Type': file.mimetype,
+            },
+        }); 
+
+        if (s3response.status == 200) {
+            const file_url = uploadURL.split('?')[0];
+            const s3_key = file_url.split('/').pop();
+
+            const created_file = await pool.query(
+                'INSERT INTO user_files (user_id, url, s3_key, name, type, size, is_public, added_at) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()) RETURNING *',
+                [user_id, file_url, s3_key, file.originalname, file.mimetype, file.size, isPublic]
+            );
+
+            res.status(201).json(created_file.rows[0]);
+        }
     } catch (error) {
-        res.status(500).send({ error: 'Failed to generate upload URL' });
+        console.error("Failed to upload file:", error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 
-    // For getting public info about any user
+// For getting public info about any user
 app.get("/users/:id/info", async (req, res) => {
     const user_id = req.params.id;
 
@@ -76,7 +101,7 @@ app.get("/users/:id/info", async (req, res) => {
     }
 });
 
-    // For getting user individual files  
+// For getting user individual files  
 app.get('/users/:id/files', withAuth, async (req, res) => {
 
     const user_id = req.params.id;
@@ -100,7 +125,7 @@ app.get('/users/:id/files', withAuth, async (req, res) => {
     }
 });
 
-    // For uploading information to the Neon postgresql database
+// For uploading information to the Neon postgresql database
 app.post('/users/files', withAuth, async (req, res) => {
 
     const { user_id, file_url, s3_key, name, type, size, added_at, isPublic } = req.body;
@@ -114,7 +139,7 @@ app.post('/users/files', withAuth, async (req, res) => {
     }
 });
 
-    // For updating the name or visibility status
+// For updating the name or visibility status
 app.put('/users/files/:id', withAuth, async (req, res) => {
     const file_id = req.params.id;
     const { name, is_public } = req.body;
@@ -137,7 +162,7 @@ app.put('/users/files/:id', withAuth, async (req, res) => {
     }
 });
 
-    // For incrementing file download number
+// For incrementing file download number
 app.post('/files/downloads/:id', async (req, res) => {
     const file_id = req.params.id;
 
@@ -157,8 +182,9 @@ app.post('/files/downloads/:id', async (req, res) => {
         res.status(500).json({ error: "Failed to increase download count"});
     } 
 });
-    // For deleting user files from the database
-    // and deleting the file from the S3 bucket
+
+// For deleting user files from the database
+// and deleting the file from the S3 bucket
 app.delete('/users/files/:id', withAuth, async (req, res) => {
     
     const file_id = req.params.id;
@@ -185,7 +211,7 @@ app.delete('/users/files/:id', withAuth, async (req, res) => {
     }
 });
 
-    // For getting public files with pagination, filtering, querying
+// For getting public files with pagination, filtering, querying
 app.get('/files', async (req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const offset = parseInt(req.query.offset) || 0;
@@ -212,6 +238,7 @@ app.get('/files', async (req, res) => {
     }
 });
 
+// For getting featured files
 app.get('/files/featured', async (req, res) => {
     try {
         const featured_file_ids = await pool.query('SELECT file_id FROM featured_files ORDER BY id DESC');
@@ -235,6 +262,7 @@ app.get('/files/featured', async (req, res) => {
     }
 });
 
+// For getting individual file information
 app.get('/files/:id', async (req, res) => {
     const file_id = req.params.id;
 
@@ -271,7 +299,7 @@ app.get('/files/:id', async (req, res) => {
 
 });
 
-    // For getting file tags
+// For getting file tags
 app.get('/files/:id/tags', withAuth, async (req, res) => {
     const file_id = req.params.id;
 
@@ -288,7 +316,7 @@ app.get('/files/:id/tags', withAuth, async (req, res) => {
     }
 });
 
-    // For settings file tags
+// For adding file tags
 app.post('/files/:id/tags', withAuth, async (req, res) => {
     const file_id = req.params.id;
     const { tags } = req.body;
@@ -310,7 +338,7 @@ app.post('/files/:id/tags', withAuth, async (req, res) => {
     }
 });
 
-    // For deleting file tags
+// For deleting file tags
 app.delete('/files/:id/tags', withAuth, async (req, res) => {
     const file_id = req.params.id;
     const { tags } = req.body;
@@ -328,7 +356,7 @@ app.delete('/files/:id/tags', withAuth, async (req, res) => {
     }
 });
 
-    // For getting popular tags
+// For getting popular tags
 app.get('/tags/popular', async (req, res) => {
      try {
         // Select the public tag_name and count from file_tags and user_files tables by joining them on file_id
@@ -340,6 +368,7 @@ app.get('/tags/popular', async (req, res) => {
     }
 });
 
+// For getting related files based on tags
 app.get('/files/:id/related', async (req, res) => {
     const file_id = req.params.id;
 
