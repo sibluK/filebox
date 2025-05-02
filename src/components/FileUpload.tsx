@@ -1,4 +1,4 @@
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
 import { memo, useRef, useState } from "react";
 import "../styles/file-upload.css"
@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import FileTagAddition from "./FileTagAddition";
 import CircularProgress from '@mui/material/CircularProgress';
 import FileVisibilitySelection from "./FileVisibilitySelection";
+import { AxiosError } from 'axios';
 
 interface FileUploadProps {
     setFiles: React.Dispatch<React.SetStateAction<UserFile[]>>;
@@ -21,7 +22,7 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
     const [isDragging, setIsDragging] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const backend_url = import.meta.env.VITE_BACKEND_URL;
-    
+
     const { getToken } = useAuth();
 
     const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
@@ -125,7 +126,14 @@ export default memo(function FileUpload({ setFiles } : FileUploadProps) {
                     </div>
                 );
             }
+
         } catch (error) {
+            if(error instanceof AxiosError) {
+                if (error.response?.status === 429) {
+                    toast.error("You have reached the upload limit. Please try again after 10 minutes.");
+                    return;
+                }
+            }
             toast.error("Upload failed. Please try again.");
             console.error('Upload error:', error);
         } finally {

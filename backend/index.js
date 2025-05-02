@@ -51,13 +51,11 @@ const pool = new Pool({ connectionString: process.env.NEON_POSTGRESQL_DB_STRING 
 const upload = multer();
 
 // Endpoints
-app.post('/upload', withAuth, upload.single('file'), async (req, res) => {
+app.post('/upload', withAuth, uploadLimiter, upload.single('file'), async (req, res) => {
     try {
         const file = req.file;
         const user_id = req.auth.userId;
         const isPublic = req.body.isPublic === 'true';
-
-        console.log(user_id)
 
         const uploadURL = await generateUploadURL();
 
